@@ -16,27 +16,26 @@ class buscaTest extends DuskTestCase
 
     #protected static $domain = 'laravel.com';
     protected static $url = 'https://youtube.com/';
-    protected static $keys = ['restaurante',];
+
     const PROD = true;
 
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->artisan('migrate:fresh');
     }
 
     /** @test */
     public function urlSpider()
     {
         $this->browse(function (Browser $browser) {
-            $this->getLinks($browser, self::$keys);
+            $this->getLinks($browser);
         });
     }
 
 
 
-    protected function getLinks(Browser $browser, $keys)
+    protected function getLinks(Browser $browser)
     {
 
         $doc = new \DOMDocument('1.0', 'utf-8');
@@ -44,9 +43,9 @@ class buscaTest extends DuskTestCase
         $doc->validateOnParse = true;
         $doc->preserveWhiteSpace = false;
 
-
-        #dd($keys);
-        foreach ($keys as $busca) {
+        $buscas = Busca::all()->pluck('q')->toArray();
+        #dd($buscas);
+        foreach ($buscas as $busca) {
             $url = self::$url . 'results?search_query=' . $busca;
             $browser->visit($url);
             $browser->maximize();

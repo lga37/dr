@@ -10,25 +10,33 @@
             <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                 <div class="p-6 overflow-hidden overflow-x-auto bg-white border-b border-gray-200">
  
+                    @if (session()->has('success'))
+                        <div class="bg-green-200 p-3 rounded text-green-800" role="alert">
+                        {{session('success')}}
+                        </div>
+                    @endif
                     <div class="min-w-full align-middle">
-                        <div class="flex items-center mb-3">
+                        <form method="POST" class="flex items-center mb-3" wire:submit='add'>
                             <x-input-label for="busca" class="mr-1" :value="__('Query')" />
-                            <x-text-input id="busca" class="mt-1 w-40" />
+                            <x-text-input id="busca" wire:model="query" class="mt-1 w-40" />
                         
                             <x-primary-button class="ms-3">
                                 {{ __('Add') }}
                             </x-primary-button>
-                        </div>
+                        </form>
+                        @error('query')
+                            <span class="text-danger">{{$message}}</span>
+                        @enderror
                         <x-input-error :messages="$errors->get('busca')" class="mt-2" />
 
                         <table class="min-w-full border divide-y divide-gray-200">
                             <thead>
                             <tr>
                                 <th class="px-6 py-3 text-left bg-gray-50">
-                                    <span class="text-xs font-medium leading-4 tracking-wider text-gray-500 uppercase">Name</span>
+                                    <span class="text-xs font-medium leading-4 tracking-wider text-gray-500 uppercase">id</span>
                                 </th>
                                 <th class="px-6 py-3 text-left bg-gray-50">
-                                    <span class="text-xs font-medium leading-4 tracking-wider text-gray-500 uppercase">Description</span>
+                                    <span class="text-xs font-medium leading-4 tracking-wider text-gray-500 uppercase">slug</span>
                                 </th>
                                 <th class="px-6 py-3 text-left bg-gray-50">
                                 </th>

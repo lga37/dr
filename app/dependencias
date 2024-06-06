@@ -29,6 +29,11 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 nvm install 20
 ======== node e npm instalado  ========================================
 
+================================= binario do ngrok
+curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null && echo "deb https://ngrok-agent.s3.amazonaws.com buster main" 	| sudo tee /etc/apt/sources.list.d/ngrok.list && sudo apt update && sudo apt install ngrok
+================================= em qq lugar
+ngrok config add-authtoken 4Qn1xhZspqD5Abs3d1PKs_4T5qhYBtFA7cMPJhA5QxN
+
 ######################### checando as versoes
 node -v && npm -v && composer about && php -v && mysql -V
 
