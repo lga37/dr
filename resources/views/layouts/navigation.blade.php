@@ -33,6 +33,12 @@
                     </x-nav-link>
                 </div>
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('comentario')" :active="request()->routeIs('comentario')">
+                        {{ __('Comentarios') }}
+                    </x-nav-link>
+                </div>
+              
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('vidiq')" :active="request()->routeIs('vidiq')">
                         {{ __('Vidiq') }}
                     </x-nav-link>

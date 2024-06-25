@@ -3,9 +3,10 @@
 namespace Tests\Browser;
 
 use App\Models\Canal;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Laravel\Dusk\Browser;
+use TimeoutException;
 use Tests\DuskTestCase;
+use Laravel\Dusk\Browser;
+use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class canalTest extends DuskTestCase
 {
@@ -18,17 +19,17 @@ class canalTest extends DuskTestCase
     /** @test */
     public function urlSpider()
     {
-        $doc = new \DOMDocument('1.0', 'utf-8');
-        libxml_use_internal_errors(true);
-        $doc->validateOnParse = true;
-        $doc->preserveWhiteSpace = false;
-        $this->browse(function (Browser $browser) use ($doc) {
+        
+        $this->browse(function (Browser $browser) {
 
             $canais = Canal::all()->pluck('slug');
 
             $canais_unicos = getCanaisUnicos();
+
+            #$canais = ['/@cafefilosofico_cpfl'];
     
-            $abas = ['videos', 'playlists', 'channels', 'about'];
+            #$abas = ['videos', 'playlists', 'channels', 'about'];
+            $abas = ['about'];
             
             $res = [];
             foreach ($canais as $k => $slug_canal) {
@@ -40,101 +41,154 @@ class canalTest extends DuskTestCase
                     continue;
                 }
                 if (self::PROD) {
-                    $url = "https://www.youtube.com/$slug_canal";
+                    $url = "https://www.youtube.com$slug_canal/about";
             
+                    #dd($url);
                     try {
-                        $browser->visit($url);
+                        $browser->visit($url);#->waitFor('#content');
+                        sleep(2);
+                        #$browser->maximize()->fitContent();
+                        #youtube_id tem muitas coisas em meta
+                        #<meta itemprop="identifier" content="UCLjpUjWJQRo3tiRzYh23q3A">                        $canonical = $browser->element('link');
+                        $metas = $browser->elements("meta");
+                        $res = [];
+                        $youtube_id = $desc = $name = null;
+                        $tags = []; #essas tags sao do meta
+                        #dd(count($metas));
+                        foreach ($metas as $i=>$meta) {
+                            #$html = $meta->getDomProperty('innerHTML');
+                            
+                            $property = $meta->getAttribute('property')??'';
+                            $itemprop = $meta->getAttribute('itemprop')??'';
+                            $name = $meta->getAttribute('name')??'';
+                            $content = $meta->getAttribute('content')??'';
+                            
+                            $res[$i]=compact('property','itemprop','name','content');
+                            #$content = $meta->getAttribute('content')??'';
+                            #dump("\n$i:".$content);
+                            if($itemprop == 'identifier'){
+                                $youtube_id = $content;
+                                $upd = Canal::where('slug',$slug_canal)->update(compact('youtube_id'));
+                                dump("upd1:$upd");
+                            }
 
-                        $browser->maximize();
-                        sleep(3);
-            
-                        $contents = $browser->element('#content');
-                    } catch (\TimeoutException $e) {
-                        echo "Timeout Exception because : " . $e->getMessage();
-                        continue;
+                            if($itemprop == 'description'){
+                                $desc = $content;
+                                $upd = Canal::where('slug',$slug_canal)->update(compact('desc'));
+                                dump("upd2:$upd");
+                            }
+                            if($itemprop == 'name'){
+                                $nome = $content;
+                                $upd = Canal::where('slug',$slug_canal)->update(compact('nome'));
+                                dump("upd3:$upd");
+                            }
+                            // if($property == 'og:video:tag'){
+                            //     $tags[] = $content;
+                            // }
+
+                        }
+                        dump(count($res));
+                        #$res = compact('youtube_id','desc','name','tags');
+                        #dd($tags);
+                        #sleep(3);
+                        #tem 6 mas so 1 e a tag do modal com as info
+                        // $contents = $browser->elements('#content');
+                        // #dump(count($contents));
+                        // foreach ($contents as $k=>$content) {
+                        //     $class = $content->getAttribute('class');
+                        //     if ($class == 'style-scope ytd-engagement-panel-section-list-renderer') {
+                        //         $html = $content->getDomProperty('innerHTML');
+                        //         #dump("\n\n$k:".$html);
+                        //     }
+                        // }
+                        #dd('fimmmmmmmmmmmmmmmmmmmmmmmm');
+                    
                     } catch (\Exception $e) {
-                        echo "\n----- nao achou o id content no HTML " . $e->getMessage();
+                        echo "\n----- erro: " . $e->getMessage();
                         continue;
                     }
             
-                    $html = $contents->getDomProperty('innerHTML');
-                    $doc->loadHTML(utf8_decode($html));
+                    #$html = $contents->getDomProperty('innerHTML');
+                    #$doc->loadHTML(utf8_decode($html));
                 } else {
+                    $doc = new \DOMDocument('1.0', 'utf-8');
+                    libxml_use_internal_errors(true);
+                    $doc->validateOnParse = true;
+                    $doc->preserveWhiteSpace = false;
                     $html = file_get_contents('storage/app/public/html_youtube/meta.html');
-
                     $html = trim($html);
                     $doc->loadHTML(utf8_decode($html));
                 }
             
-                echo "\n-----------------============ Processando Meta Info";
-                $res['meta'] = $this->processaMeta($doc, $slug_canal);
-                print_r($res['meta']);
-                if (empty($res['meta']['nome_canal']) && $res['meta']['inscritos'] == 0) {
-                    $msg = "\n ------------------- Nao pegou nome nem inscritos - pulando " . $slug_canal;
-                    colorLog($msg, 'e');
-                    continue;
-                }
+                // echo "\n-----------------============ Processando Meta Info";
+                // $res['meta'] = $this->processaMeta($doc, $slug_canal);
+                // print_r($res['meta']);
+                // if (empty($res['meta']['nome_canal']) && $res['meta']['inscritos'] == 0) {
+                //     $msg = "\n ------------------- Nao pegou nome nem inscritos - pulando " . $slug_canal;
+                //     colorLog($msg, 'e');
+                //     continue;
+                // }
             
-                foreach ($abas as $aba) {
-                    echo "\n-----------------===================== ABA $aba";
-                    if (self::PROD) {
-                        $url = "https://www.youtube.com/$slug_canal/$aba";
+                // foreach ($abas as $aba) {
+                //     echo "\n-----------------===================== ABA $aba";
+                //     if (self::PROD) {
+                //         $url = "https://www.youtube.com/$slug_canal/$aba";
             
-                        try {
-                            $browser->visit($url);
-                            sleep(2);
-                        } catch (\Exception $e) {
-                            $msg = "\n ------------------- Nao pegou o get da URL ------------ Exception : " . $e->getMessage();
-                            colorLog($msg, 'e');
-                            continue;
-                        }
+                //         try {
+                //             $browser->visit($url);
+                //             sleep(2);
+                //         } catch (\Exception $e) {
+                //             $msg = "\n ------------------- Nao pegou o get da URL ------------ Exception : " . $e->getMessage();
+                //             colorLog($msg, 'e');
+                //             continue;
+                //         }
             
-                        try {
-                            sleep(3);
-                            $contents = $browser->element("#contents"); #atencao aqui content pega tudo e contents em MUSIC so o header
-                            $html = $contents->getDomProperty('innerHTML');
+                //         try {
+                //             sleep(3);
+                //             $contents = $browser->element("#contents"); #atencao aqui content pega tudo e contents em MUSIC so o header
+                //             $html = $contents->getDomProperty('innerHTML');
             
-                        } catch (\Exception $e) {
-                            $msg = "\n ------------------- Nao pegou o HTML ------------ Exception : " . $e->getMessage();
-                            colorLog($msg, 'e');
-                            continue;
-                        }
+                //         } catch (\Exception $e) {
+                //             $msg = "\n ------------------- Nao pegou o HTML ------------ Exception : " . $e->getMessage();
+                //             colorLog($msg, 'e');
+                //             continue;
+                //         }
             
-                    } else {
-                        $html = file_get_contents('storage/app/public/html_youtube/meta.html_' . $aba . '.html');
-                        $html = trim($html);
-                    }
+                //     } else {
+                //         $html = file_get_contents('storage/app/public/html_youtube/meta.html_' . $aba . '.html');
+                //         $html = trim($html);
+                //     }
             
-                    $doc->loadHTML(utf8_decode($html)); #id= ou content [MUSIC por ex.]
+                //     $doc->loadHTML(utf8_decode($html)); #id= ou content [MUSIC por ex.]
             
-                    switch ($aba) {
-                        case 'videos':
-                            $res['videos'] = $this->processaVideos($doc, $slug_canal);
-                            break;
-                        case 'playlists':
-                            #$res['playlists'] = $this->processaPlaylists($doc, $slug_canal);
-                            break;
-                        case 'channels':
-                            $res['channels'] = $this->processaCanaisFilhos($doc, $slug_canal);
-                            break;
-                        case 'about':
-                            $res['about'] = $this->processaSobre($doc, $slug_canal);
-                            break;
-                    }
-                }
+                //     switch ($aba) {
+                //         case 'videos':
+                //             $res['videos'] = $this->processaVideos($doc, $slug_canal);
+                //             break;
+                //         case 'playlists':
+                //             #$res['playlists'] = $this->processaPlaylists($doc, $slug_canal);
+                //             break;
+                //         case 'channels':
+                //             $res['channels'] = $this->processaCanaisFilhos($doc, $slug_canal);
+                //             break;
+                //         case 'about':
+                //             $res['about'] = $this->processaSobre($doc, $slug_canal);
+                //             break;
+                //     }
+                // }
             
-                if (!self::PROD) {
-                    dd($res['meta']);
+                // if (!self::PROD) {
+                //     dd($res['meta']);
                    
-                }
+                // }
             
-                if (empty($res['about']['dt']) && $res['about']['views'] == 0) {
-                    $msg = "\n ------------------- Nao pegou dt nem views - pulando " . $slug_canal;
-                    colorLog($msg, 'e');
-                    continue;
-                }
+                // if (empty($res['about']['dt']) && $res['about']['views'] == 0) {
+                //     $msg = "\n ------------------- Nao pegou dt nem views - pulando " . $slug_canal;
+                //     colorLog($msg, 'e');
+                //     continue;
+                // }
                 
-                $this->saveCanal($res, $slug_canal); #aqui faz o parse e finaliza
+                #$this->saveCanal($res, $slug_canal); #aqui faz o parse e finaliza
             
             
                 

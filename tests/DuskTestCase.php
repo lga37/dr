@@ -11,6 +11,8 @@ use PHPUnit\Framework\Attributes\BeforeClass;
 
 abstract class DuskTestCase extends BaseTestCase
 {
+
+
     /**
      * Prepare for Dusk test execution.
      */
@@ -27,14 +29,32 @@ abstract class DuskTestCase extends BaseTestCase
      */
     protected function driver(): RemoteWebDriver
     {
-        $options = (new ChromeOptions)->addArguments(collect([
+        $options = (new ChromeOptions)
+        #->setBinary("/opt/google/chrome/google-chrome")
+        #->setBinary('/usr/bin/google-chrome')
+        ->addArguments(collect([
             $this->shouldStartMaximized() ? '--start-maximized' : '--window-size=1920,1080',
+
+
+
         ])->unless($this->hasHeadlessDisabled(), function (Collection $items) {
             return $items->merge([
                 '--disable-gpu',
-                '--headless=new',
+		        '--headless=new',
+		        '--no-sandbox', # adicionado
+
+                #'--headless=new',
+                #'--headless', ## adic
+                // '--no-sandbox', # adicionado
+                // '--disable-notifications', #adic
+                // '--disable-dev-shm-usage',#adic
+                // '--disable-extensions', # adicionado
             ]);
         })->all());
+
+        #dd($options);
+       
+          
 
         return RemoteWebDriver::create(
             $_ENV['DUSK_DRIVER_URL'] ?? 'http://localhost:9515',

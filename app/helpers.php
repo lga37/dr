@@ -1,5 +1,64 @@
 <?php 
 
+#$v = "7.28K"; echo return_kmb_to_integer($v);
+
+
+function kmbt($number)
+{
+    $abbrevs = [12 => 'T', 9 => 'B', 6 => 'M', 3 => 'K', 0 => ''];
+
+    foreach ($abbrevs as $exponent => $abbrev) {
+        if (abs($number) >= pow(10, $exponent)) {
+            $display = $number / pow(10, $exponent);
+            $decimals = ($exponent >= 3 && round($display) < 100) ? 1 : 0;
+            $number = number_format($display, $decimals).$abbrev;
+            break;
+        }
+    }
+
+    return $number;
+}
+
+function retorna_float($input){
+    if(preg_match('/\d+\.\d+/', $input, $tokens)){
+        return $tokens[0];
+    }
+    return null;
+}
+
+
+
+
+function return_kmb_to_integer($val) {
+    #dump($val);
+    if($val){
+        $val = trim($val,'$');
+
+
+        #var_dump($val);
+        if(strlen($val)>1){
+            $last = strtolower($val[strlen($val)-1]);
+            $val = (float) $val;
+            switch($last) {
+                case 'b':
+                    $val *= 1000;
+                case 'm':
+                    $val *= 1000;
+                case 'k':
+                    #dd((float) $val);
+                    $val *= 1000;
+                default:
+                    $val *= 1;
+            }
+        
+        }
+    
+    }
+
+    return (int) $val;
+}
+
+
 
 function timeToSeconds(string $time): int
 {
@@ -264,7 +323,7 @@ function parseNumLikes(string $likes)
     return $res;
 }
 
-function parseDataUploadVideo(string $dt_video): string|bool
+function parseDataUploadVideo(string $dt_video,$bd=true): string|bool
 {
     #echo $dt_video;
     if (preg_match('/([\d]{1,2})?\s?de\s?(.+)\s?de\s?([\d]{4})?/s', $dt_video, $m)) {
@@ -284,6 +343,10 @@ function parseDataUploadVideo(string $dt_video): string|bool
     $mes = retornaMes($mes);
     $nova_dt = sprintf("%d/%d/%d", $dia, $mes, $ano);
     #echo $nova_dt;
+    if($bd){
+        $nova_dt = sprintf("%d-%d-%d", $ano, $mes, $dia);
+
+    }
     return $nova_dt;
 }
 

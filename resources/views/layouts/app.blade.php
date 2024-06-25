@@ -33,4 +33,5 @@
             </main>
         </div>
     </body>
+    @livewire('wire-elements-modal')
 </html>

@@ -13,17 +13,9 @@ use Tests\DuskTestCase;
 class buscaTest extends DuskTestCase
 {
 
-
-    #protected static $domain = 'laravel.com';
     protected static $url = 'https://youtube.com/';
 
     const PROD = true;
-
-
-    public function setUp(): void
-    {
-        parent::setUp();
-    }
 
     /** @test */
     public function urlSpider()
@@ -79,8 +71,8 @@ class buscaTest extends DuskTestCase
                 
                 $ysr_s = $doc->getElementsByTagName('ytd-item-section-renderer');
 
-                if ($this->chegouNoFim($ysr_s) || !self::PROD) {
-                #if ($i==5) {
+                #if ($this->chegouNoFim($ysr_s) || !self::PROD) {
+                if ($i==9) {
                     $yvr_s = $doc->getElementsByTagName('ytd-video-renderer');
 
                     #$ypr_s = $doc->getElementsByTagName('ytd-playlist-renderer');

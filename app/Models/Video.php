@@ -11,4 +11,16 @@ class Video extends Model
 
     protected $fillable = ['nome','slug','canal_id','busca_id'];
 
+
+    public function comentarios(){
+        return $this->hasMany(Comentario::class);
+    }
+
+    public function busca(){
+        return $this->belongsTo(Busca::class);
+    }
+
+
+
+
 }

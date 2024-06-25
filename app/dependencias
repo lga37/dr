@@ -38,4 +38,21 @@ ngrok config add-authtoken 4Qn1xhZspqD5Abs3d1PKs_4T5qhYBtFA7cMPJhA5QxN
 node -v && npm -v && composer about && php -v && mysql -V
 
 
+##################### seed #################################
+
+insert into canals (slug,youtube_id,busca_id,nome) 
+values 
+('@economistasincero','UCrp0zmecZ3TNV8FSR-tjv7A',1,'econ sinc'),
+('@ancap_su','UCLTWPE7XrHEe8m_xAmNbQ-Q',1,'ancapsu');
+
+insert into videos (slug,busca_id,nome,canal_id) 
+values 
+('watch?v=pKOBXeTgCic',1,'video 1-1',1),
+('watch?v=GIUh4395t7E',1,'video 1-2',1),
+('watch?v=3EckU1ZDg4g',1,'video 2-1',2),
+('watch?v=6vug1B9pklE',1,'video 2-2',2);
+
+
+
+
 

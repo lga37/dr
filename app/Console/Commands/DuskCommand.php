@@ -21,8 +21,8 @@ class DuskCommand extends VendorDuskCommand
     public function handle()
     {
 
-        if(!defined('STDOUT')) define('STDOUT', fopen('php://stdout', 'wb'));
-        $process = Process::path("/var/www/dr")->tty()->timeout(0)->run('php artisan dusk --filter buscaTest');
+        #if(!defined('STDOUT')) define('STDOUT', fopen('php://stdout', 'wb'));
+        $process = Process::path("/var/www/dr")->timeout(0)->run('php artisan dusk --without-tty --filter buscaTest');
         #$process = Process::run('ls -la');
         dd($process->output());
         // $process->setTimeout(null);

@@ -39,7 +39,12 @@
                                     <span class="text-xs font-medium leading-4 tracking-wider text-gray-500 uppercase">slug</span>
                                 </th>
                                 <th class="px-6 py-3 text-left bg-gray-50">
+                                    <span class="text-xs font-medium leading-4 tracking-wider text-gray-500 uppercase">videos</span>
                                 </th>
+                                <th class="px-6 py-3 text-left bg-gray-50">
+                                    <span class="text-xs font-medium leading-4 tracking-wider text-gray-500 uppercase">canais</span>
+                                </th>
+
                             </tr>
                             </thead>
  
@@ -52,8 +57,21 @@
                                         <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
                                             {{ $busca->slug }}
                                         </td>
+
                                         <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                                           <a wire:click="del({{ $busca->id }})" class="text-red-700 font-semibold" href="#">del</a>
+                                            {{ $busca->videos()->count() }}
+                                        </td>
+                                        <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
+                                            {{ $busca->canals()->count() }}
+                                        </td>
+                                        <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
+                                            {{ $busca->created_at->diffForHumans() }}
+                                        </td>
+
+
+                                        <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
+                                           <a wire:click="del({{ $busca->id }})" 
+                                            class="bg-red-100 px-3 py-1 border-red-600 hover:border-red-900 border-2  rounded-full text-red-600 hover:text-red-900 font-semibold" href="#">del</a>
                                         </td>
                                     </tr>
                                 @empty

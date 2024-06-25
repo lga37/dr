@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('nome');
             $table->string('slug')->unique();
+            $table->string('youtube_id')->nullable();
             $table->text('desc')->nullable();
             $table->json('links')->nullable();
             $table->boolean('parse')->default(false);
@@ -25,6 +26,16 @@ return new class extends Migration
             $table->unsignedInteger('views')->nullable();
             $table->date('dt')->nullable();
             $table->string('local')->nullable();
+
+            $table->string('categ')->nullable();
+            $table->integer('videos')->nullable();
+            $table->char('score',1)->nullable();
+            $table->float('min')->nullable();
+            $table->float('max')->nullable();
+            $table->float('engagement')->nullable();
+            $table->float('frequency')->nullable();
+            $table->float('length')->nullable();
+            
 
             $table->foreignIdFor(Busca::class);
 
