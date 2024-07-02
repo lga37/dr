@@ -16,13 +16,45 @@ class Video extends Component
 {
 
     use WithPagination;
+    
+    public $perPage = 10;
+    public $search = '';
+    public $sortDirection = 'ASC';
+    public $sortColumn = 'id';
 
-    function getInfo($slug){
-        $result = Process::path("/var/www/dr")->timeout(0)
-        ->run('/usr/bin/php artisan dusk --without-tty --filter videoTest');
+    public function doSort($column){
+        if($this->sortColumn == $column){
+            $this->sortDirection = ($this->sortDirection=='ASC')? 'DESC':'ASC';
+            return;
+        }
+        $this->sortColumn = $column;
+        $this->sortDirection = 'ASC';
+    
+    }
+
+    public function updatedSearch(){
+        $this->resetPage();
+    }
+
+    public function del($id)
+    {
+        ModelsVideo::find($id)->delete();
+        #dd($id);
+    }
+
+
+
+    function Url($slug){
+        
+        
+        $result = Process::path("/var/www/dr")
+        ->timeout(0)
+        #->run('/usr/bin/php artisan dusk --without-tty --filter videoTest 123')
+        ->run('/usr/bin/php artisan dusk --without-tty --filter videoTest::urlSpider')
+        ;
+
         $res = $result->exitCode() === 0? $result->output() : $result->errorOutput();
-        
-        
+                
         dump('result:'. $res);
 
     }
@@ -74,44 +106,117 @@ class Video extends Component
         }        
         session()->flash('status', $tot . ' comentarios adicionados para '.$slug);
 
-            
-
-        #dd($comments);
-        
-        // id bigint, autoincrement .................................................................................. bigint unsigned  
-        // user varchar, utf8mb4_unicode_ci ............................................................................. varchar(255)  
-        // texto text, utf8mb4_unicode_ci ....................................................................................... text  
-        // likes int, nullable .......................................................................................... int unsigned  
-        // dislikes int, nullable ....................................................................................... int unsigned  
-        // dt timestamp .................................................................................................... timestamp  
-        // perspective double, nullable ....................................................................................... double  
-        // video_id bigint ........................................................................................... bigint unsigned  
-        // created_at timestamp, nullable .................................................................................. timestamp  
-        // updated_at 
-
-
-// "channelId" => "UCugK_9W-5o56H0pEnJtFQnw"
-//   "videoId" => "5BtnVGJfqkU"
-//   "textDisplay" => "
-// Ninguém parece ver o lado positivo nesta PL fracassada.    Esta é a primeira vez que a bancada religiosa admite o aborto legal e tenta regularizá-lo por lei. Ag
-//  ▶
-// "
-//   "textOriginal" => "
-// Ninguém parece ver o lado positivo nesta PL fracassada.    Esta é a primeira vez que a bancada religiosa admite o aborto legal e tenta regularizá-lo por lei. Ag
-//  ▶
-// "
-//   "authorDisplayName" => "@smart-ytvideos"
-//   "authorProfileImageUrl" => "https://yt3.ggpht.com/ytc/AIdro_nsIJXHiaFSVjTQWLbfP3gqwwzrwVbSBHhHO4JNkb0=s48-c-k-c0x00ffffff-no-rj"
-//   "authorChannelUrl" => "http://www.youtube.com/@smart-ytvideos"
-//   "authorChannelId" => array:1 [▶]
-//   "canRate" => true
-//   "viewerRating" => "none"
-//   "likeCount" => 0
-//   "publishedAt" => "2024-06-19T15:55:14Z"
-//   "updatedAt" => "2024-06-19T15:55:14Z"
 
         
     }
+
+
+    public function API(){
+        
+        #atencao maximo de 50/request .... nao sei pq 
+        $array_id_videoid = ModelsVideo::whereNull('views')->take(50)->pluck('slug','id')->map(function($slug) {
+            #/watch?v=4KzsMcxA6Q8&pp=ygUGYWJvcnRv
+            if (preg_match('/[?&]{1}v=([^&]+)/', $slug, $m)){
+                $video_id = $m[1];
+                return $video_id;
+            }
+            return false;
+    
+        })
+        ->reject(function ($value) {
+            return $value === false;
+        })
+        ->toArray();
+
+        $url = "https://www.googleapis.com/youtube/v3/videos";
+
+        $array_videoid_id = array_flip($array_id_videoid);
+        
+        #dump($array_videoid_id);
+
+        $videos_id = array_values($array_id_videoid);
+
+        
+        $videos = implode(",",$videos_id);  
+
+        #dd($videos);
+
+        $params =[
+            'order'=> 'date',
+            'key' => env('YOUTUBE_API_KEY'),
+            'part' => 'snippet,statistics,contentDetails',
+            #'maxResults' => 100,
+            'id' => $videos,
+            #'pageToken' => $pageToken
+        ];
+
+        $call = $url.'?'.http_build_query($params);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $call);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $output = curl_exec($ch);
+        curl_close($ch);
+
+        $vs = json_decode($output,true);
+
+        $coluna_vs = $vs['items'];
+        
+        $videos=[];
+        $tot = 0;
+        foreach($coluna_vs as $i=>$v) { 
+            $video_id = $v['id'];
+            $id_na_tabela_videos = $array_videoid_id[$video_id]; #atencao aqui, to so pegando de volta o id
+            extract($v); # snippet,statistics,contentDetails
+            $nome = $snippet['title'];
+            $desc = $snippet['description'];
+            $dt = $snippet['publishedAt'];
+            $lang = $snippet['defaultLanguage']??null;
+            $categ_id = $snippet['categoryId'];
+            
+            $views = $statistics['viewCount']??null;
+            $likes = $statistics['likeCount']??null;
+            $dislikes = $statistics['dislikeCount']??null;
+            $favorites = $statistics['favoriteCount']??null;
+            $comments = $statistics['commentCount']??null;
+           
+            $duration = $contentDetails['duration'];
+            $caption = $contentDetails['caption'];
+
+            $duration = ISO8601ToSeconds($duration);
+            $dt = date('Y-m-d H:i:s', strtotime( $dt ) );
+
+            #dd($dt);
+
+            $dados=compact('nome','desc','dt','lang','categ_id','views','likes','dislikes','favorites','comments','duration','caption');
+            $videos[$i]=$dados;
+            #dump($dados);
+
+            $res = ModelsVideo::find($id_na_tabela_videos);
+            #dump($res);
+            if($atualizou=$res->update($dados)){
+                $tot++;
+            }
+            dump($atualizou);
+            dump($res);
+            dump('------------------------');
+        }
+
+        if($tot == count($array_id_videoid)){
+            $msg = "Todos os $tot registros atualizados";
+        } else {
+            $msg = "Atualizados $tot registros, porem com ". count($array_id_videoid) ." no total";
+        }
+
+        #dd($videos);
+        session()->flash('success', $msg);
+
+        
+        
+
+    }
+
+
+
 
 
 
@@ -154,8 +259,13 @@ class Video extends Component
     public function render()
     {
        
+
         return view('livewire.video',[
-            'videos'=>ModelsVideo::paginate(30),
+            'videos'=>ModelsVideo::search($this->search)
+            ->orderBy($this->sortColumn, $this->sortDirection)
+            ->paginate($this->perPage),
         ]);
+
+        
     }
 }

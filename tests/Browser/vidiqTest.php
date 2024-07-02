@@ -20,7 +20,7 @@ class vidiqTest extends DuskTestCase
 
         $this->browse(function (Browser $browser) {
 
-            $canais = Canal::whereNotNull('youtube_id')->pluck('youtube_id')->toArray();
+            $canais = Canal::whereNotNull('youtube_id')->whereNull('min')->pluck('youtube_id')->toArray();
 
             #dd($canais);
             #$canais = ["UCrp0zmecZ3TNV8FSR-tjv7A", "UCLTWPE7XrHEe8m_xAmNbQ-Q"];

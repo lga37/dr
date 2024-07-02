@@ -21,17 +21,25 @@ return new class extends Migration
             #$table->string('cod')->unique();
             $table->string('nome');
             $table->string('slug')->unique();
+            $table->string('video_id')->nullable();
+
             $table->text('desc')->nullable();
-            $table->text('transcript')->nullable();
+            $table->text('caption')->nullable();
             $table->json('hashtags')->nullable();
             $table->boolean('parse')->default(false);
 
+            $table->unsignedInteger('comments')->nullable();
             $table->unsignedInteger('likes')->nullable();
             $table->unsignedInteger('dislikes')->nullable();
             $table->unsignedInteger('views')->nullable();
+            $table->unsignedInteger('favorites')->nullable();
+            
             $table->unsignedInteger('duration')->nullable();
 
-            $table->date('dt')->nullable();
+            $table->unsignedInteger('categ_id')->nullable();
+            $table->string('lang')->nullable();
+
+            $table->datetime('dt')->nullable();
 
             $table->foreignIdFor(Canal::class);
             $table->foreignIdFor(Busca::class);

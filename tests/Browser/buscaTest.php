@@ -35,7 +35,16 @@ class buscaTest extends DuskTestCase
         $doc->validateOnParse = true;
         $doc->preserveWhiteSpace = false;
 
-        $buscas = Busca::all()->pluck('q')->toArray();
+
+        if(session()->has('ids_busca')) {
+            $ids = session()->get('ids_busca'); 
+            dd($ids);
+            $buscas = Busca::whereIn('id',$ids)->pluck('q')->toArray();
+            session()->forget('ids_busca');
+        } else {
+            $buscas = Busca::all()->pluck('q')->toArray();
+
+        }
         #dd($buscas);
         foreach ($buscas as $busca) {
             $url = self::$url . 'results?search_query=' . $busca;

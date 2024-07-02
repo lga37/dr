@@ -22,6 +22,12 @@ class Busca extends Component
     #[Rule('required|min:3')]
     public $query;
 
+    public $ids = [];
+
+    public function updatedIds($id){
+        dd($this->id);
+    }
+
     public function add()
     {
         $this->validate();
@@ -38,19 +44,38 @@ class Busca extends Component
         #dd($id);
     }
 
+    public function Bot($id){
+
+        #dd($id);
+        
+        
+        session()->put('ids_busca', $id);
+
+        #dd(session()->get('ids_busca'));
+ 
+    }
+
+
     public function craw()
     {
         $path = "/var/www/dr";
         $result = Process::path($path)->timeout(0)->run('/usr/bin/php artisan dusk --without-tty --filter buscaTest');
 
-        dump( 's:'. $result->successful());
-        dump( 'f:'. $result->failed());
-        dump( 'e:'. $result->exitCode());
-        dump( 'o:'. $result->output());
-        dump( 'e:'. $result->errorOutput());
-        dump( 'result:'. $result);
+        $this->stream(
+            to: 'result',
+            content: $result->output(),
+            replace: true
 
-        echo $result->exitCode() === 0? $result->output() : $result->errorOutput();
+        );
+
+        // dump( 's:'. $result->successful());
+        // dump( 'f:'. $result->failed());
+        // dump( 'e:'. $result->exitCode());
+        // dump( 'o:'. $result->output());
+        // dump( 'e:'. $result->errorOutput());
+        // dump( 'result:'. $result);
+
+        // echo $result->exitCode() === 0? $result->output() : $result->errorOutput();
 
     }
 

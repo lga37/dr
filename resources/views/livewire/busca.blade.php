@@ -33,6 +33,9 @@
                             <thead>
                             <tr>
                                 <th class="px-6 py-3 text-left bg-gray-50">
+                                    <input type="checkbox" name="all">
+                                </th>
+                                <th class="px-6 py-3 text-left bg-gray-50">
                                     <span class="text-xs font-medium leading-4 tracking-wider text-gray-500 uppercase">id</span>
                                 </th>
                                 <th class="px-6 py-3 text-left bg-gray-50">
@@ -51,6 +54,13 @@
                             <tbody class="bg-white divide-y divide-gray-200 divide-solid">
                                 @forelse($buscas as $busca)
                                     <tr class="bg-white">
+
+                                        <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
+                                            <input type="checkbox" wire:model="ids" name="checkb-{{ $busca->id }}" value="{{ $busca->id }}">
+                                        </td>
+                                      
+                                        
+
                                         <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
                                             {{ $busca->id }}
                                         </td>
@@ -67,11 +77,17 @@
                                         <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
                                             {{ $busca->created_at->diffForHumans() }}
                                         </td>
+                                        <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
+                                            {{ $busca->updated_at->diffForHumans() }}
+                                        </td>
 
+                                        <td class="px-3 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
+                                            <a wire:click.prevent="Bot('{{ $busca->id }}')" href="#"
+                                                class="text-green-700 font-semibold">Bot</a>
+                                        </td>
 
                                         <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                                           <a wire:click="del({{ $busca->id }})" 
-                                            class="bg-red-100 px-3 py-1 border-red-600 hover:border-red-900 border-2  rounded-full text-red-600 hover:text-red-900 font-semibold" href="#">del</a>
+                                            <x-danger-button class="" wire:click="del('{{ $busca->id }}')">del</x-danger-button>
                                         </td>
                                     </tr>
                                 @empty
@@ -88,6 +104,10 @@
                     <x-secondary-button wire:click="craw" class="mt-3">
                         {{ __('Crawling Youtube') }}
                     </x-secondary-button>
+
+                    <div class="w-full bg-gray-300" wire:stream="result">
+                        {{ $content??'' }}
+                    </div>
     
                 </div>
                

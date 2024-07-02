@@ -7,12 +7,12 @@ use App\Models\Canal as ModelsCanal;
 use Illuminate\Support\Facades\Process;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
-use Livewire\Features\SupportPagination\HandlesPagination;
 use Livewire\WithPagination;
 
 class Canal extends Component
 {
     use WithPagination;
+
     
     public $perPage = 10;
     public $search = '';
@@ -29,6 +29,9 @@ class Canal extends Component
     
     }
 
+    public function updatedSearch(){
+        $this->resetPage();
+    }
 
     public function del($id)
     {

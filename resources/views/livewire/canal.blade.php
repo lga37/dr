@@ -1,7 +1,7 @@
 <div>
     <x-slot name="header">
         <h2 class="text-xl font-semibold leading-tight text-gray-800">
-            {{ __('canals') }}
+            {{ __('Canais') }}
         </h2>
     </x-slot>
  
@@ -26,9 +26,10 @@
 
                         </div>
                         <div class="">{{ $canals->links() }}</div>
-
                     </div>
                     
+
+
                     <div class="w-full align-middle">
                         <table class="w-full border divide-y divide-gray-200">
                             <thead>
@@ -135,7 +136,7 @@
                                         @endif
 
                                         <td class="px-2 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                                            <x-danger-button wire:click="del('{{ $canal->id }}')">del</x-danger-button>
+                                            <x-danger-button class="" wire:click="del('{{ $canal->id }}')">del</x-danger-button>
                                         </td>
 
                                     </tr>

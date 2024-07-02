@@ -1,6 +1,16 @@
 <?php 
 
-#$v = "7.28K"; echo return_kmb_to_integer($v);
+
+
+
+function ISO8601ToSeconds($ISO8601){
+	$interval = new \DateInterval($ISO8601);
+
+	return ($interval->d * 24 * 60 * 60) +
+		($interval->h * 60 * 60) +
+		($interval->i * 60) +
+		$interval->s;
+}
 
 
 function kmbt($number)

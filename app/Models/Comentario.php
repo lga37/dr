@@ -16,6 +16,17 @@ class Comentario extends Model
     }
 
 
+    public function scopeSearch($query, $search){
+
+        if($search != ''){
+            return $query->where('user','LIKE','%'. $search .'%')
+            #->orWhere('slug','LIKE','%'. $search .'%')
+            #->orWhere('youtube_id','LIKE','%'. $search .'%')
+            ;           
+    
+        }
+        return;
+    }
 
 
 }
