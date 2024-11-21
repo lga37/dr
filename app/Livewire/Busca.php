@@ -2,29 +2,35 @@
 
 namespace App\Livewire;
 
-use App\Models\Busca as ModelsBusca;
-
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Process;
+use Livewire\Component;
 use Illuminate\Support\Str;
 
-use Livewire\Attributes\Computed;
-use Livewire\Attributes\Layout;
 use Livewire\Attributes\Rule;
-use Livewire\Component;
+use Livewire\Attributes\Layout;
+use App\Models\Busca as ModelsBusca;
+
+use Livewire\Attributes\Computed;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Process;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 #use Symfony\Component\Process\Exception\ProcessFailedException;
 #use Symfony\Component\Process\Process;
 
+use HeadlessChromium\BrowserFactory;
+
+
 class Busca extends Component
 {
+
 
     #[Rule('required|min:3')]
     public $query;
 
     public $ids = [];
 
-    public function updatedIds($id){
+    public function updatedIds($id)
+    {
         dd($this->id);
     }
 
@@ -44,40 +50,33 @@ class Busca extends Component
         #dd($id);
     }
 
-    public function Bot($id){
+    public $out;
 
-        #dd($id);
-        
-        
-        session()->put('ids_busca', $id);
-
-        #dd(session()->get('ids_busca'));
  
-    }
-
-
-    public function craw()
+    public function Bot($id)
     {
-        $path = "/var/www/dr";
-        $result = Process::path($path)->timeout(0)->run('/usr/bin/php artisan dusk --without-tty --filter buscaTest');
+
+        $busca_ids = "1 2";
+        $acao = 'search';
+        $signature = '/usr/bin/php artisan busca '.$busca_ids.' --acao='.$acao;
+
+        $res = Process::path("/var/www/dr")->timeout(0)->run($signature);
+
+        #dd($res->output());
+        $this->out = $signature."\n\n".$res->output();
 
         $this->stream(
-            to: 'result',
-            content: $result->output(),
-            replace: true
-
+            to: 'out',
+            content: $this->out,
+            replace: true,
         );
 
-        // dump( 's:'. $result->successful());
-        // dump( 'f:'. $result->failed());
-        // dump( 'e:'. $result->exitCode());
-        // dump( 'o:'. $result->output());
-        // dump( 'e:'. $result->errorOutput());
-        // dump( 'result:'. $result);
+        return $this->out;
 
-        // echo $result->exitCode() === 0? $result->output() : $result->errorOutput();
-
+        #dd($id);
     }
+
+
 
     #[Computed()]
     public function getAll()

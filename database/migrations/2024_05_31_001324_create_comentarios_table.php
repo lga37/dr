@@ -21,15 +21,15 @@ return new class extends Migration
             $table->text('texto');
             $table->unsignedInteger('likes')->nullable();
             $table->unsignedInteger('dislikes')->nullable();
-
-
             $table->timestamp('dt');
-            $table->float('perspective')->nullable();
-        
+            $table->float('tox')->nullable();
         
             $table->foreignIdFor(Video::class);
 
             $table->timestamps();
+
+            #$table->unique(['user', 'video_id']);
+
         });
     }
 

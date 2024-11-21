@@ -10,6 +10,8 @@
             <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                 <div class="p-6 overflow-hidden overflow-x-auto bg-white border-b border-gray-200">
                     
+                    <x-msg />
+
                     <div class="flex items-center justify-around mb-3">
                         <div class="flex items-center space-x-4">
                             <x-input-label>Search</x-input-label>
@@ -61,7 +63,7 @@
                                             {{ $canal->id }}
                                         </td>
                                         <td class="px-2 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                                            <a href="http://youtube.com{{ $canal->slug }}" 
+                                            <a href="http://youtube.com{{ $canal->cod }}" 
                                                 class="underline hover:no-underline text-blue-600 hover:text-blue-900 visited:text-purple-600"
                                                 target="_blank">
                                                 {{ Str::limit($canal->slug,15) }}
@@ -118,25 +120,46 @@
                                        
 
                                         <td class="px-2 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                                            <a wire:click.prevent="getCanal()" class="text-blue-700 font-semibold" 
-                                                href="#">info</a>
+                                            <a wire:click.prevent="Url('{{ $canal->id }}')" class="text-blue-700 font-semibold" 
+                                                href="#">Url</a>
+                                                <div wire:loading wire:target="Url('{{ $canal->id }}')">
+                                                    ...
+                                                </div>
+                                        </td>
+                                        <td class="px-2 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
+                                            <a wire:click.prevent="API('{{ $canal->id }}')" class="text-blue-700 font-semibold" 
+                                                href="#">Api</a>
                                         </td>
 
                                         @if ($canal->youtube_id)
                                             
                                             <td class="px-2 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
                                                 <button class="text-yellow-700 font-semibold"
-                                                wire:click.prevent="$dispatch('openModal', { component: 'anos-webarx', arguments: { canal: {{ $canal }} }})">WebArX</button>
+                                                wire:click.prevent="$dispatch('openModal', { component: 'anos-webarx', arguments: { canal: {{ $canal }} }})">
+                                                Man</button>
                                             </td>
+
                                             <td class="px-2 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
                                                 <a wire:click.prevent="vidiq('{{ $canal->id }}')" class="text-purple-700 font-semibold" 
-                                                    href="#">vidiq</a>
+                                                    href="#">Vidiq</a>
+                                                <div wire:loading wire:target="vidiq('{{ $canal->id }}')">
+                                                    ...
+                                                </div>
                                             </td>
+                                            <td class="px-2 py-1 text-sm leading-5 text-green-900 whitespace-no-wrap">
+                                                <a wire:click.prevent="arxiv('{{ $canal->id }}')" 
+                                                    class="text-green-700 font-semibold" 
+                                                    href="#">Arxiv</a>
+                                                    <div wire:loading wire:target="arxiv('{{ $canal->id }}')">
+                                                        ...
+                                                    </div>
+                                            </td>
+
 
                                         @endif
 
                                         <td class="px-2 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                                            <x-danger-button class="" wire:click="del('{{ $canal->id }}')">del</x-danger-button>
+                                            <x-danger-button class="" wire:click.prevent="del('{{ $canal->id }}')">del</x-danger-button>
                                         </td>
 
                                     </tr>
@@ -150,6 +173,18 @@
                             </tbody>
                         </table>
                     </div>
+
+                    <div wire:stream="out">{{ $out }}</div>
+
+
+                    <x-secondary-button wire:click="craw" class="mt-3">
+                        {{ __('Acoes divs') }}
+                    </x-secondary-button>
+
+                    <div class="w-full bg-gray-300" wire:stream="result">
+                        {{ $content ?? '' }}
+                    </div>
+
                  </div>
             </div>
         </div>

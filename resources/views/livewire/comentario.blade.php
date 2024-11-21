@@ -69,10 +69,10 @@
                                         </td>
 
                                         <td class="px-2 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                                            <a href="http://youtube.com{{ $comentario->video->slug }}" 
+                                            <a href="{{ $comentario->video->cod }}" 
                                                 class="underline hover:no-underline text-blue-600 hover:text-blue-900 visited:text-purple-600"
                                                 target="_blank">
-                                                {{ Str::limit($comentario->video->nome, 40) }} 
+                                                {{ Str::limit($comentario->video->nome, 30) }} 
                                             </a>
                                         </td>
 
@@ -80,10 +80,13 @@
                                             {{ $comentario->likes }}
                                         </td>
                                         <td class="px-3 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                                            <a wire:click="setTox({{ $comentario->id }})" class="text-blue-700 font-semibold" href="#">tox</a>
+                                            {{ $comentario->perspective }}
+                                        </td>
+                                        <td class="px-3 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
+                                            <a wire:click.prevent="setTox({{ $comentario->id }})" class="text-blue-700 font-semibold" href="#">Tox</a>
                                         </td>
                                         <td class="px-2 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                                            <x-danger-button class="" wire:click="del('{{ $comentario->id }}')">del</x-danger-button>
+                                            <x-danger-button class="" wire:click.prevent="del('{{ $comentario->id }}')">del</x-danger-button>
                                         </td>
                                         <td class="px-2 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
                                             {{ $comentario->created_at->diffForHumans() }}
@@ -99,6 +102,9 @@
                             </tbody>
                         </table>
                     </div>
+
+
+                    
                  </div>
             </div>
         </div>

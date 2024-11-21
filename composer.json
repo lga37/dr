@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "chrome-php/chrome": "^1.11",
         "laravel/framework": "^11.9",
         "laravel/tinker": "^2.9",
         "livewire/livewire": "^3.5",
@@ -19,8 +20,7 @@
         "laravel/pint": "^1.13",
         "laravel/sail": "^1.26",
         "mockery/mockery": "^1.6",
-        "nunomaduro/collision": "^8.0",
-        "phpunit/phpunit": "^11.0.1"
+        "nunomaduro/collision": "^8.0"
     },
     "autoload": {
         "psr-4": {
@@ -29,8 +29,7 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
-            "app/helpers.php",
-            "storage/app/public/html_youtube/detalhe.html"
+            "app/helpers.php"
         ] 
         
     },

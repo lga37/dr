@@ -34,7 +34,7 @@ Route::get('video', Video::class)->name('video');
 Route::get('canal', Canal::class)->name('canal');
 Route::get('vidiq', Vidiq::class)->name('vidiq');
 Route::get('archive', Archive::class)->name('archive');
-Route::get('comentario', Comentario::class)->name('comentario');
+Route::get('comentario/{video_id?}', Comentario::class)->name('comentario');
 
 
 Route::get('/dashboard', function () {

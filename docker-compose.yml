@@ -1,28 +1,28 @@
 version: '3'
 
-networks:
-  default:
-    external:
-      name: webapp
+# networks:
+#   default:
+#     external:
+#       name: webapp
 
 volumes:
     volgusmysql:
 
 services:
-    nginx_livewire:
+    nginx_dr:
         image: nginx:stable-alpine
         container_name: ${APP_NAME}_nginx
         restart: always
-        #ports:
-        #    - '81:80'
+        ports:
+            - '81:80'
         volumes:
             - ./:/var/www/html
             - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf:rw
         depends_on:
-            - php_livewire
-            - mysql_livewire
+            - php_dr
+            - mysql_dr
 
-    php_livewire:
+    php_dr:
         build:
             context: ./docker
             dockerfile: php.dockerfile
@@ -32,7 +32,7 @@ services:
         volumes:
             - ./:/var/www/html
 
-    mysql_livewire:
+    mysql_dr:
         image: mysql:8.0
         container_name: ${APP_NAME}_mysql
         restart: always
@@ -41,6 +41,6 @@ services:
             - volgusmysql:/var/lib/mysql
         environment:
             MYSQL_DATABASE: ${DB_DATABASE}
-            # MYSQL_USER: ${DB_USERNAME}
+            #MYSQL_USER: ${DB_USERNAME}
             MYSQL_PASSWORD: ${DB_PASSWORD}
             MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}

@@ -4,18 +4,19 @@
             {{ __('Videos') }}
         </h2>
     </x-slot>
- 
+
     <div class="py-12">
         <div class="mx-auto max-w-12xl sm:px-6 lg:px-8">
             <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                 <div class="p-6 overflow-hidden overflow-x-auto bg-white border-b border-gray-200">
-         
+
                     <x-msg />
 
                     <div class="flex items-center justify-around mb-3">
                         <div class="flex items-center space-x-4">
                             <x-input-label>Search</x-input-label>
-                            <x-text-input wire:model.live.debounce.500ms="search" name="q" /></div>
+                            <x-text-input wire:model.live.debounce.500ms="search" name="q" />
+                        </div>
                         <div>
                             <div class="flex space-x-4 items-center">
                                 <x-input-label>Per page</x-input-label>
@@ -34,97 +35,114 @@
 
                     <div class="min-w-full align-middle">
 
-                        
+
                         <table class="min-w-full border divide-y divide-gray-200">
-                           
+
 
                             <thead>
                                 <tr>
-                                    <th wire:click="doSort('id')" class="px-2 py-1 text-left bg-gray-50">
-                                        <x-datatable-item columnName="id" :sortColumn="$sortColumn" :sortDirection="$sortDirection" /> 
+                                    <th class="px-6 py-3 text-left bg-gray-50">
+                                        <input type="checkbox" name="all">
                                     </th>
-                                    <th wire:click="doSort('slug')" class="px-2 py-1 text-left bg-gray-50">
-                                        <x-datatable-item columnName="slug" :sortColumn="$sortColumn" :sortDirection="$sortDirection" /> 
+                                    <th wire:click="doSort('id')" class="px-2 py-1 text-left bg-gray-50">
+                                        <x-datatable-item columnName="id" :sortColumn="$sortColumn" :sortDirection="$sortDirection" />
+                                    </th>
+                                    <th wire:click="doSort('cod')" class="px-2 py-1 text-left bg-gray-50">
+                                        <x-datatable-item columnName="cod" :sortColumn="$sortColumn" :sortDirection="$sortDirection" />
                                     </th>
                                     <th wire:click="doSort('nome')" class="px-2 py-1 text-left bg-gray-50">
-                                        <x-datatable-item columnName="nome" :sortColumn="$sortColumn" :sortDirection="$sortDirection" /> 
+                                        <x-datatable-item columnName="nome" :sortColumn="$sortColumn" :sortDirection="$sortDirection" />
                                     </th>
-                                   
-                                   
-                                    
-    
+
+
+
+
                                 </tr>
                             </thead>
 
                             <tbody class="bg-white divide-y divide-gray-200 divide-solid">
                                 @forelse($videos as $video)
                                     <tr class="bg-white" wire:key="video-{{ $video->id }}">
+                                        <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
+                                            <input type="checkbox" wire:model="ids" name="checkb-{{ $video->id }}"
+                                                value="{{ $video->id }}">
+                                        </td>
+
                                         <td class="px-3 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
                                             {{ $video->id }}
                                         </td>
                                         <td class="px-3 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                                            <a href="http://youtube.com{{ $video->slug }}" 
+                                            <a href="{{ $video->cod }}"
                                                 class="underline hover:no-underline text-blue-600 hover:text-blue-900 visited:text-purple-600"
                                                 target="_blank">
-                                                {{ Str::limit($video->slug, 15) }}
-                                                   
+                                                {{ Str::of($video->cod)->chopStart('https://www.youtube.com/watch?v=') }}
                                             </a>
-                                            
+
                                         </td>
+
                                         <td class="px-3 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
                                             {{ $video->nome }}
                                         </td>
                                         <td class="px-3 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                                            {{ $video->likes }}
+                                            {{ $video->likes }} | {{ $video->dislikes }}
                                         </td>
-                                        <td class="px-3 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                                            {{ $video->comments }}
-                                        </td>
+                                       
                                         <td class="px-3 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
                                             {{ $video->views }}
                                         </td>
+
                                         <td class="px-3 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                                            {{ $video->favorites }}
+                                            {{ $video->keywords ? count(json_decode($video->keywords, true)) : 0 }}
                                         </td>
+
                                         <td class="px-3 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                                            {{ $video->duration }}
+                                            <a href="{{ route('comentario',$video->id) }}">{{ $video->comentarios()->count() }}</a>
+                                             / {{ $video->comments }} 
                                         </td>
+                                       
                                         
                                         <td class="px-3 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                                            {{ $video->dislikes }}
+                                            {{ $video->duration }} s
+                                        </td>
+                                        <td class="px-3 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
+                                            {{ $video->categ_id }}
                                         </td>
 
-                                        <td class="px-3 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                                            {{ $video->comentarios()->count() }}
-                                        </td>
+
 
                                         <td class="px-3 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                                            {{ $video->busca->slug ?? 'x' }}
-                                        </td>
-
-                                        <td class="px-3 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                                            <a wire:click.prevent="API()" href="#"
+                                            <a wire:click.prevent="API('{{ $video->id }}')" href="#"
                                                 class="text-green-700 font-semibold">Api</a>
                                         </td>
-                                        
+
                                         <td class="px-3 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                                            <a wire:click.prevent="Url('{{ $video->slug }}')" href="#"
+                                            <a wire:click.prevent="Url('{{ $video->id }}')" href="#"
                                                 class="text-green-700 font-semibold">Url</a>
-                                        </td>
-                                        
-                                        <td class="px-3 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                                            <a wire:click.prevent="getComments('{{ $video->slug }}')" href="#"
-                                                class="text-blue-700 font-semibold">getComments</a>
+                                            <div wire:loading wire:target="Url('{{ $video->id }}')">
+                                                ...
+                                            </div>
                                         </td>
 
-                                        <td class="px-2 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                                            <x-danger-button class="" wire:click="del('{{ $video->id }}')">del</x-danger-button>
+                                        <td class="px-3 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
+                                            <a wire:click.prevent="getComments('{{ $video->cod }}')" href="#"
+                                                class="text-blue-700 font-semibold">Comm</a>
                                         </td>
-                                        
+                                        <td class="px-3 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
+                                            <a wire:click.prevent="Gpt('{{ $video->id }}')" href="#"
+                                                class="text-green-700 font-semibold">Gpt</a>
+                                        </td>
+
+
+                                        <td class="px-2 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
+                                            <x-danger-button class=""
+                                                wire:click="del('{{ $video->id }}')">del</x-danger-button>
+                                        </td>
+
                                     </tr>
                                 @empty
                                     <tr class="bg-white">
-                                        <td colspan="3" class="px-3 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
+                                        <td colspan="3"
+                                            class="px-3 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
                                             No videos found.
                                         </td>
                                     </tr>
@@ -132,9 +150,20 @@
                             </tbody>
                         </table>
                     </div>
-                  
-                    
-                 </div>
+
+                    <div wire:stream="out">{{ $out }}</div>
+
+
+                    <x-secondary-button wire:click="craw" class="mt-3">
+                        {{ __('Acoes divs') }}
+                    </x-secondary-button>
+
+                    <div class="w-full bg-gray-300" wire:stream="result">
+                        {{ $content ?? '' }}
+                    </div>
+
+
+                </div>
             </div>
         </div>
     </div>

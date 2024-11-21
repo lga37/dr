@@ -1,10 +1,9 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
-
 use App\Models\Canal;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
@@ -13,17 +12,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('archives', function (Blueprint $table) {
+        Schema::create('arxivs', function (Blueprint $table) {
             $table->id();
 
-            
+                   
             $table->unsignedInteger('views')->nullable();
             $table->unsignedInteger('subscribers')->nullable();
 
             $table->date('dt');
-
+            $table->timestamp('ts')->nullable();
+            $table->text('obs')->nullable();
+            $table->boolean('parsed')->default(0);
+            
             $table->foreignIdFor(Canal::class);
 
+            $table->unique(['canal_id','ts']);
             $table->timestamps();
         });
     }
@@ -33,6 +36,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('archives');
+        Schema::dropIfExists('arxivs');
     }
 };

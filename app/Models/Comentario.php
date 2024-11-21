@@ -9,7 +9,10 @@ class Comentario extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user','dt','likes','texto','video_id'];
+    // protected $fillable = ['user','dt','likes','texto','video_id'];
+
+    protected $guarded = [];
+
 
     public function video(){
         return $this->belongsTo(Video::class);

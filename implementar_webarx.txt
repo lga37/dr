@@ -1,0 +1,53 @@
+curl -X GET "https://web.archive.org/cdx/search/cdx?url=https://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA"
+
+
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20210104092744 https://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA text/html 200 QGGC3DPYOI7AWCXWQR3CDZ4JVIXXI7PR 25790
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20211011170036 https://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA text/html 200 XSZS3I4KTFYYZYKWKLOQBEWIRBJ2QXUR 85078
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20211030065311 http://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA application/binary 301 3I42H3S6NNFQ2MSVX7XZKYAYSCX5QBYJ 505
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20211102055516 https://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA text/html 200 QCMMXZS5LNK73XDQXMBAPXIRT2VKEG2C 88690
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20220430234256 http://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA application/binary 301 3I42H3S6NNFQ2MSVX7XZKYAYSCX5QBYJ 501
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20220501173242 https://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA text/html 200 IMZVCG6AZGB3SV7NXP4GB45IYS4VWKOG 92369
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20220521055938 http://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA application/binary 301 3I42H3S6NNFQ2MSVX7XZKYAYSCX5QBYJ 502
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20220612153623 http://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA warc/revisit - 3I42H3S6NNFQ2MSVX7XZKYAYSCX5QBYJ 581
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20220622033743 http://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA warc/revisit - 3I42H3S6NNFQ2MSVX7XZKYAYSCX5QBYJ 579
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20220622033744 https://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA text/html 200 HND3HFFSMXVYVJNH2DFXU7ATBI3QEKYD 72637
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20220717043611 https://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA text/html 200 2OLSCPYSFMPWL3BHXS4HLJQRQNCROLV7 75374
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20220815011457 https://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA text/html 200 ECIZYJRMTX6WHFZQCR76NYOCLEFZJZJC 72088
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20220815011502 http://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA application/binary 301 3I42H3S6NNFQ2MSVX7XZKYAYSCX5QBYJ 500
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20220815221758 https://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA text/html 200 OICZBF3IGAFAIH6TJNZLVGX3ZUBP2BS5 72384
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20220815221803 http://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA warc/revisit - 3I42H3S6NNFQ2MSVX7XZKYAYSCX5QBYJ 553
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20220823001749 https://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA text/html 200 DN4K5AMSWCHQEX2NMGQU6ENQLVYKBRAN 73112
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20220823001756 http://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA warc/revisit - 3I42H3S6NNFQ2MSVX7XZKYAYSCX5QBYJ 556
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20220830012151 https://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA text/html 200 XE3NGEZTE6RJIVF5VIFN6JVGWXDXDABD 72263
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20220830012159 http://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA warc/revisit - 3I42H3S6NNFQ2MSVX7XZKYAYSCX5QBYJ 555
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20220903213639 https://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA warc/revisit - 3I42H3S6NNFQ2MSVX7XZKYAYSCX5QBYJ 845
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20220913021547 https://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA text/html 200 CWIHT2WILCOPOTY3QTCYLSLMYH3IGRZI 63271
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20220913021553 http://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA warc/revisit - 3I42H3S6NNFQ2MSVX7XZKYAYSCX5QBYJ 555
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20220920053903 https://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA text/html 200 PHT6ZZPZSSW2AUYHN4VSMI7LL2NFFLOB 69741
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20220920053908 http://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA warc/revisit - 3I42H3S6NNFQ2MSVX7XZKYAYSCX5QBYJ 555
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20220923225542 http://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA warc/revisit - 3I42H3S6NNFQ2MSVX7XZKYAYSCX5QBYJ 579
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20220927041157 https://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA text/html 200 X3VGAHKDL3FM2Z6OAXKNKAZSZMSZWA2I 70444
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20220927041202 http://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA warc/revisit - 3I42H3S6NNFQ2MSVX7XZKYAYSCX5QBYJ 555
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20220927054315 https://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA text/html 200 UIK5S6GMW7U4N4DEV32RWYF3HEKCW4HG 68607
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20221001234015 https://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA text/html 200 EHOO3BWFYSXZGSPEQW22U753DDQQRTQT 90891
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20221019015450 http://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA application/binary 301 3I42H3S6NNFQ2MSVX7XZKYAYSCX5QBYJ 502
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20221021194707 https://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA text/html 200 IGDPHWMOBEUDJTUGQ5P6LTY7IQMT74FB 93360
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20221120084948 http://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA application/binary 301 3I42H3S6NNFQ2MSVX7XZKYAYSCX5QBYJ 499
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20221120085027 https://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA text/html 200 6KRH4CKGBDOIMMPUTGJY3WJMABACOIEZ 81622
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20221129102418 http://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA application/binary 301 3I42H3S6NNFQ2MSVX7XZKYAYSCX5QBYJ 501
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20221129102419 https://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA text/html 200 YOGAWP7BGQZ5A6DZQ4PGYR2E4LEYTMPW 83930
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20221206183900 http://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA warc/revisit - 3I42H3S6NNFQ2MSVX7XZKYAYSCX5QBYJ 556
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20221206183901 https://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA text/html 200 H57EHUBZTC3R4KNWXVURGRQ774OZSKTL 85531
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20230203203607 https://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA text/html 200 IS6GWYC5WNWBGJIBT6SMHTFCDUTWA2XX 80694
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20230203230339 https://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA text/html 200 7ZDRKEPAR4DEN6TQXWBJLYQDVR4WWODH 80139
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20230203230344 http://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA application/binary 301 3I42H3S6NNFQ2MSVX7XZKYAYSCX5QBYJ 502
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20230203231233 https://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA text/html 200 SAMC54DY2AR7AECXXZ35Z3KZVL2LJ3FX 80302
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20230203231241 http://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA application/binary 301 3I42H3S6NNFQ2MSVX7XZKYAYSCX5QBYJ 502
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20230407214301 https://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA text/html 200 JBWCX2B2WHNQBP7ND2HI7MMHETQ7X5BG 83060
+com,youtube)/channel/uc_vz-of_pagz-h8xvwxypaa 20240822202421 https://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA text/html 200 NUQJCBTKAB5DS6NUG3VZLLSNMYWY3SDL 168099
+
+http://web.archive.org/web/20220913021547/https://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA
+
+Your S3 access key: yM1dTNKVPiboyTyl
+Your S3 secret key: RLmyx2nRoDk49h9Y
+
