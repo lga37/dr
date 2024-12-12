@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use DateTime;
 use App\Models\Canal;
 use App\Models\Video;
+use App\Models\Arxiv as ArxivModel;
 use Illuminate\Support\Str;
 use Illuminate\Console\Command;
 use HeadlessChromium\Exception\OperationTimedOut;
@@ -18,8 +19,6 @@ class Arxiv extends Bot
 
     public function craw(array $canal_ids)
     {
-
-
         $queries = Canal::whereIn('id', $canal_ids)->select('id', 'youtube_id')->get()->toArray();
 
         #dd($queries);
@@ -27,126 +26,191 @@ class Arxiv extends Bot
             $canal_id = $query['id'];
             $youtube_id = $query['youtube_id'];
             ######### api
-            $url = "http://www.youtube.com/channel/$youtube_id";
+            $url = "https://www.youtube.com/channel/$youtube_id";
             echo $url . "\n\n";
-
-            ########### pra teste
-            $canal = Canal::find($canal_id);
-            $arxivs = $canal->arxivs;
-            #dd($arxivs);
-            foreach ($arxivs as $arx) {
-                $ts = filtraDigitos($arx['ts']);
-                $url_final = "http://web.archive.org/web/$ts/$url";
-                echo $url_final . "\n\n";
-                // http://web.archive.org/web/20220913021547/https://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA
-
-                try {
-                    $this->initBrowser(true);
-                    $page = $this->browser->createPage();
-                    $page->navigate($url_final);
-
-                    sleep(6);
-                    $seletor = 'span.yt-subscription-button-subscriber-count-branded-horizontal.yt-uix-tooltip';
-                    $elem = $page->dom()->querySelector($seletor);
-                    $inscritos = $elem->getAttribute('title');
-                    $inscritos = filtraDigitos($inscritos);
-                    dd($inscritos);
-
-                } catch (OperationTimedOut $e) {
-                    echo 'OperationTimedOut : ' . $e->getMessage();
-                } catch (ElementNotFoundException $e) {
-                    echo '::::33333' . $e->getMessage();
-                } catch (\Exception $e) {
-                    echo 'Exception : ' . $e->getMessage();
-                } finally {
-                    $this->closeBrowser();
-                }
-            }
-
-            dd('fimmmmmmmmmm teste');
-
-
 
             $site = "https://archive.org/wayback/available?url=$url";
             $out = file_get_contents($site);
             $res = json_decode($out, true);
+            $tot = 0;
             if (isset($res['archived_snapshots']['closest']['available']) && $res['archived_snapshots']['closest']['available'] == 'true') {
-                $snaps = "http://web.archive.org/cdx/search/cdx?url=$url";
-                echo "\n" . $snaps;
+                $snaps = "https://web.archive.org/cdx/search/cdx?url=$url";
                 $txt = file_get_contents($snaps);
+
+                echo "\n\n$txt\n\n";
                 $re = '\s([\d]{12,})\s(.+?)\s';
+                $canal = Canal::find($canal_id);
                 if (preg_match_all('/' . $re . '/', $txt, $res)) {
-
-                    $canal = Canal::find($canal_id);
-
-                    $tss = [];
                     foreach ($res[1] as $k => $ts) {
-                        #eliminar a coluna dt pois o mysql ja insere no formato
-                        #fazer o upsert
-                        $date = DateTime::createFromFormat('YmdHis', $ts);
-                        $dt = $date->format('Y-m-d');
-
-                        $tss[] = ['dt' => $dt, 'ts' => $ts];
+                        if (!ArxivModel::where('canal_id', $canal_id)->where('ts', $ts)->exists()) {
+                            ArxivModel::create(compact('canal_id', 'ts'));
+                            $tot++;
+                        }
                     }
-
-                    $canal->arxivs()->createMany($tss);
                 } else {
                     echo "nao parseou";
                 }
 
-                ######## craw
-                try {
-                    $canal->fresh();
-                    $arxivs = $canal->arxivs;
 
-                    #dd($arxivs);
-                    foreach ($arxivs as $arx) {
-                        $url_final = "http://web.archive.org/web/$ts/$url";
-                        // http://web.archive.org/web/20220913021547/https://www.youtube.com/channel/UC_VZ-oF_pAgz-h8xVWXypaA
-                        $this->initBrowser(true);
-                        $page = $this->browser->createPage();
-                        $page->navigate($url_final);
-                        sleep(6);
-                    }
-                } catch (OperationTimedOut $e) {
-                    echo 'OperationTimedOut : ' . $e->getMessage();
-                } catch (ElementNotFoundException $e) {
-                    echo '::::33333' . $e->getMessage();
-                } catch (\Exception $e) {
-                    echo 'Exception : ' . $e->getMessage();
-                } finally {
-                    $this->closeBrowser();
-                }
             } else {
-                echo "\nnao tem arxiv para ele $url";
+                dump($res);
+                echo "\nATENCAO::::::::::::::::::::::::: nao tem arxiv para ele :::::::::::::::::::::::::: $url";
             }
+
+
         }
+        session()->flash('status', $tot . ' arxivs adicionados');
+
+
     }
 
 
-    // {
-    //     "url": "http://tc.eserver.org/",
-    //     "archived_snapshots": {
-    //         "closest": {
-    //             "status": "200",
-    //             "available": true,
-    //             "url": "http://web.archive.org/web/20180427130634/https://tc.eserver.org/",
-    //             "timestamp": "20180427130634"
-    //         }
-    //     }
-    // }
+    public function process($id)
+    {
+        ######## craw
+        // $canal->fresh();
+        $canal = Canal::find($id);
+        $youtube_id = $canal->first()->youtube_id;
+        $url = "https://www.youtube.com/channel/$youtube_id";
+
+        $arxivs = ArxivModel::where('canal_id', $id)->where('parsed', 0)->select('id', 'ts')->get()->toArray();
+
+        foreach ($arxivs as $arx) {
+            $arxiv_id = $arx['id'];
+            $ts = filtraDigitos($arx['ts']);
+            $url_final = "http://web.archive.org/web/$ts/$url";
+            echo $url_final . "\n\n";
+
+            try {
+                $this->initBrowser(true);
+                $page = $this->browser->createPage();
+                $page->navigate($url_final);
+
+                sleep(20);
+
+                // <span class="yt-core-attributed-string yt-content-metadata-view-model-wiz__metadata-text yt-core-attributed-string--white-space-pre-wrap yt-core-attributed-string--link-inherit-color" dir="auto" role="text">677K subscribers</span>
+
+               
+                //<yt-formatted-string id="subscriber-count" class="style-scope ytd-c4-tabbed-header-renderer" aria-label="195K subscribers">195K subscribers</yt-formatted-string>
+               
+               
 
 
+                $seletor1 = 'span.yt-subscription-button-subscriber-count-branded-horizontal.yt-uix-tooltip';
+                $seletor2 = 'span.yt-subscription-button-subscriber-count-branded-horizontal.subscribed.yt-uix-tooltip';
 
-    // org,eserver,tc)/ 20180515033912 http://tc.eserver.org:80/ text/html 302 RK36SX4X6VJ44FMUWDK4QYFPYGBYUJUH 404
-    // org,eserver,tc)/ 20180716082607 http://tc.eserver.org:80/ text/html 302 RK36SX4X6VJ44FMUWDK4QYFPYGBYUJUH 405
-    // org,eserver,tc)/ 20180915160723 http://tc.eserver.org:80/ text/html 302 RK36SX4X6VJ44FMUWDK4QYFPYGBYUJUH 404
-    // org,eserver,tc)/ 20181014163006 http://tc.eserver.org/ warc/revisit - RK36SX4X6VJ44FMUWDK4QYFPYGBYUJUH 502
-    // org,eserver,tc)/ 20181115172501 http://tc.eserver.org:80/ text/html 302 RK36SX4X6VJ44FMUWDK4QYFPYGBYUJUH 404
-    // org,eserver,tc)/ 20181228210547 http://tc.eserver.org/ warc/revisit - RK36SX4X6VJ44FMUWDK4QYFPYGBYUJUH 500
+                $seletor3 = 'span.yt-core-attributed-string.yt-content-metadata-view-model-wiz__metadata-text yt-core-attributed-string--white-space-pre-wrap.yt-core-attributed-string--link-inherit-color';
 
+                $seletor4 = 'span.yt-core-attributed-string.yt-content-metadata-view-model-wiz__metadata-text yt-core-attributed-string--white-space-pre-wrap.yt-core-attributed-string--link-inherit-color > span';
 
 
+                $seletor5 = '#subscriber-count.style-scope.ytd-c4-tabbed-header-renderer'; #esse aqui e pelo aria-label
+
+
+                if ($elem = $page->dom()->querySelector($seletor1)) {
+                    #echo $elem->getHTML();
+                    $subscribers = $elem->getAttribute('title');
+                    $subscribers = retornaMilMilhaoBilhaoToInt($subscribers);
+                    echo "\n if1 $subscribers \n";
+                    if($subscribers > 0){
+                        $parsed=1;
+                        ArxivModel::where('id', $arxiv_id)->update(compact('subscribers', 'parsed'));
+                    }
+
+                } elseif ($elem = $page->dom()->querySelector($seletor2)) {
+                    #echo $elem->getHTML();
+                    $subscribers = $elem->getAttribute('title');
+                    $subscribers = retornaMilMilhaoBilhaoToInt($subscribers);
+                    echo "\n if2 $subscribers \n";
+
+                    if($subscribers > 0){
+                        $parsed=1;
+                        ArxivModel::where('id', $arxiv_id)->update(compact('subscribers', 'parsed'));
+                    }
+
+
+                } elseif ($elem = $page->dom()->querySelector($seletor3)) {
+                    #echo $elem->getHTML();
+                    $subscribers = $elem->getText();
+                    $subscribers = retornaMilMilhaoBilhaoToInt($subscribers);
+                    echo "\n if3 $subscribers \n";
+
+                    if($subscribers > 0){
+                        $parsed=1;
+                        ArxivModel::where('id', $arxiv_id)->update(compact('subscribers', 'parsed'));
+                    }
+
+
+                } elseif ($elem = $page->dom()->querySelector($seletor4)) {
+                    #echo $elem->getHTML();
+                    $subscribers = $elem->getText();
+                    $subscribers = retornaMilMilhaoBilhaoToInt($subscribers);
+                    echo "\n if4 $subscribers \n";
+                    if($subscribers > 0){
+                        $parsed=1;
+                        ArxivModel::where('id', $arxiv_id)->update(compact('subscribers', 'parsed'));
+                    }
+
+                } elseif ($elem = $page->dom()->querySelector($seletor5)) {
+                    $subscribers = $elem->getAttribute('aria-label');
+                    $subscribers = retornaMilMilhaoBilhaoToInt($subscribers);
+                    echo "\n if5 $subscribers \n";
+
+                    if($subscribers > 0){
+                        $parsed=1;
+                        ArxivModel::where('id', $arxiv_id)->update(compact('subscribers', 'parsed'));
+                    }
+
+
+                } else {
+
+                    #faz via regex no wget
+                    $re = '"subscriberCountText":{"runs":\[{"text":"(.+?) subscribers"}';
+
+                    $ch = curl_init();
+                    curl_setopt($ch, CURLOPT_URL, $url_final);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                    $txt = curl_exec($ch);
+                    curl_close($ch);
+
+                    $res = [
+                        '"subscriberCountText":{"runs":\[{"text":"(.+?) subscribers"}',
+                        '{"text":{"content":"([\d\.KkmM]+?) subscribers"}}',
+                    ];
+
+                    foreach ($res as $key=>$re) {
+                        if (preg_match('/' . $re . '/', $txt, $res)) {
+                            #dd($res[1]);
+                            $subscribers = $res[1];
+                            $subscribers = retornaMilMilhaoBilhaoToInt($subscribers); #19.5K subscribers
+                            #echo $txt;
+                            echo "\n\n regex $subscribers chave $key \n";
+                            if($subscribers > 0){
+                                $parsed=1;
+                                ArxivModel::where('id', $arxiv_id)->update(compact('subscribers', 'parsed'));
+                            }
+                            break;
+                        }
+                    }
+
+                    #echo "\nNao acho o seletor (1 a 3) ----------------------- Tbm nao deu regex.";
+                }
+
+
+                #echo $elem->getHTML();
+
+
+            } catch (OperationTimedOut $e) {
+                echo 'OperationTimedOut : ' . $e->getMessage();
+            } catch (ElementNotFoundException $e) {
+                echo '::::33333' . $e->getMessage();
+            } catch (\Exception $e) {
+                echo 'Exception : ' . $e->getMessage();
+            } finally {
+                $this->closeBrowser();
+            }
+        }
+    }
 
 
     public function handle()

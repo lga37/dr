@@ -20,6 +20,8 @@ class Canal extends Component
     public $sortDirection = 'ASC';
     public $sortColumn = 'id';
 
+    public $out;
+
     public function doSort($column)
     {
         if ($this->sortColumn == $column) {
@@ -41,7 +43,12 @@ class Canal extends Component
         #dd($id);
     }
 
-    public $out;
+
+
+    public function clear() {
+
+        $this->reset('out');
+    }
 
     public function Url($id)
     {
@@ -66,6 +73,8 @@ class Canal extends Component
 
         return $this->out;
     }
+
+    public function graf1() {}
 
 
 
@@ -171,7 +180,8 @@ class Canal extends Component
         return $this->out;
     }
 
-    public function arxiv($id)
+    # somente pega os ts no arxiv
+    public function arxiv1($id)
     {
 
         if (is_array($id)) {
@@ -180,6 +190,32 @@ class Canal extends Component
             $busca_ids = $id;
         }
         $acao = 'craw';
+        $signature = '/usr/bin/php artisan arxiv ' . $busca_ids . ' --acao=' . $acao;
+
+        $res = Process::path("/var/www/dr")->timeout(0)->run($signature);
+
+        #dd($res->output());
+        $this->out = $signature . "\n\n" . $res->output();
+
+        $this->stream(
+            to: 'out',
+            content: $this->out,
+            replace: true,
+        );
+
+        return $this->out;
+    }
+
+    # processa os arx para pegar os inscritos
+    public function arxiv2($id)
+    {
+
+        if (is_array($id)) {
+            $busca_ids = implode(" ", $id);
+        } else {
+            $busca_ids = $id;
+        }
+        $acao = 'process'; ## aqui muda a f
         $signature = '/usr/bin/php artisan arxiv ' . $busca_ids . ' --acao=' . $acao;
 
         $res = Process::path("/var/www/dr")->timeout(0)->run($signature);

@@ -29,6 +29,11 @@ return new class extends Migration
             $table->json('keywords')->nullable(); #essa aqui eu pego da meta
             $table->boolean('parse')->default(false);
 
+            $table->float('nlp1')->nullable();
+            $table->float('nlp2')->nullable();
+            $table->text('gpt')->nullable();
+
+
             $table->unsignedInteger('comments')->nullable();
             $table->unsignedInteger('likes')->nullable();
             $table->unsignedInteger('dislikes')->nullable();

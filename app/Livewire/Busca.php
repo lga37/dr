@@ -56,7 +56,7 @@ class Busca extends Component
     public function Bot($id)
     {
 
-        $busca_ids = "1 2";
+        $busca_ids = $id;
         $acao = 'search';
         $signature = '/usr/bin/php artisan busca '.$busca_ids.' --acao='.$acao;
 

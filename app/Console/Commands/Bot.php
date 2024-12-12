@@ -571,6 +571,7 @@ class Bot extends Command
         $browser = $browserFactory->createBrowser([
             'headless' => $headless,
             'windowSize'   => [1920, 1080],
+            'noSandbox' => true,
 
             #'customFlags' => ['--proxy-server=http://104.207.54.209:3128'],
         ]);
@@ -587,6 +588,7 @@ class Bot extends Command
 
         $acao = $this->argument('acao');
         #$this->list();
+
 
 
 

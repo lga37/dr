@@ -1,54 +1,68 @@
-<?php 
+<?php
 
 
 use Illuminate\Support\Str;
 
 
-function datetimeTZtoDateMysql(string $datetimeTZ){
+function datetimeTZtoDateMysql(string $datetimeTZ)
+{
     $timestamp = new \DateTimeImmutable($datetimeTZ);
     $bd = $timestamp->format('Y-m-d H:i');
     return $bd;
 }
 
 # 123,7 mi para 123700000
+#2,999
+
+#retornaMilMilhaoBilhaoToInt('2.5 M');
+
 function retornaMilMilhaoBilhaoToInt(string $txt)
 {
     #dump($txt);
-    $re = '([\d,]+)\s?(mil|mi|k|b)?';
+    $txt = str_replace(",", ".", $txt);
+    #dump($txt);
+
+    # atencao se for so m ele pega primeiro em relacao ao mi
+    $re = '([\d\.]+)\s?(mil|M|mi|k|K|B|b)?';
     if (preg_match('/' . $re . '/', $txt, $res)) {
         $num = $res[1];
-        $num = str_replace(",",".",$num);
-        
-        $letra="";
-        if(isset($res[2])){
+        $num = str_replace(".", "", $num);
+
+        $letra = "";
+        if (isset($res[2])) {
             $letras = strtolower($res[2]);
-            switch($letras){
+            #dump($letras);
+            switch ($letras) {
                 case "mil":
                 case "k":
-                case "m": $letra = 'k'; break;
+                case "m":
+                    $letra = 'k';
+                    break;
 
                 case "milhoes":
-                case "mi": $letra = 'm'; break;
+                case "mi":
+                    $letra = 'm';
+                    break;
 
                 case "bi":
-                case "b": $letra = 'b'; break;
+                case "b":
+                    $letra = 'b';
+                    break;
             }
-        }
-        $val = $num.$letra;
+            $val = $num . $letra;
+            $num = return_kmb_to_integer($val);
 
-        $num = return_kmb_to_integer($val);
+        }
         #dd($num);
         return $num;
     }
-
-    
-
 }
 
 
-function limpaEspacosAcentuacao($str){
+function limpaEspacosAcentuacao($str)
+{
     $limpo = Str::ascii($str);
-    $limpo = preg_replace('/&nbsp;/',' ', $limpo);
+    $limpo = preg_replace('/&nbsp;/', ' ', $limpo);
     $limpo = Str::squish($limpo);
     return $limpo;
 }
@@ -56,7 +70,7 @@ function limpaEspacosAcentuacao($str){
 function limpaEspacosTabs($txt)
 {
     $limpo = preg_replace('/&nbsp;/', ' ', $txt);
-    
+
     #Str::squish(); esse tira extra spacos
 
     $limpo = preg_replace('/\s\s+/', ' ', $limpo);
@@ -68,10 +82,11 @@ function limpaEspacosTabs($txt)
 
 
 
-function retornaFloat($txt){
+function retornaFloat($txt)
+{
     #dump($txt);
     $so_digitos = filtraDigitos($txt);
-    if(is_numeric($so_digitos)){
+    if (is_numeric($so_digitos)) {
         $fl = (float) round($so_digitos / 100, 2);
         return $fl;
     }
@@ -101,8 +116,8 @@ function filtraDateTime($txt, $toMysql = true)
     if (preg_match('/' . $re_d2y4 . '/', $txt, $res)) {
         if ($toMysql) {
             $y = (string) $res[4];
-            if(strlen($y)==2){
-                $ano = '20'.$y;
+            if (strlen($y) == 2) {
+                $ano = '20' . $y;
                 $date = $ano . '-' . $res[3] . '-' . $res[2];
             } else {
                 $date = $y . '-' . $res[3] . '-' . $res[2];
@@ -115,10 +130,10 @@ function filtraDateTime($txt, $toMysql = true)
     if (preg_match('/' . $re_hora . '/', $txt, $res)) {
         $hora = $res[1];
         $min = $res[2];
-        $seg = $res[3]??null;
-        $time = $hora.':'.$min;
-        if($seg){
-            $time .= ':'.$seg;
+        $seg = $res[3] ?? null;
+        $time = $hora . ':' . $min;
+        if ($seg) {
+            $time .= ':' . $seg;
         }
     }
 
@@ -128,10 +143,11 @@ function filtraDateTime($txt, $toMysql = true)
 }
 
 
-function ISO8601ToSeconds($ISO8601){
-	$interval = new \DateInterval($ISO8601);
+function ISO8601ToSeconds($ISO8601)
+{
+    $interval = new \DateInterval($ISO8601);
 
-	return ($interval->d * 24 * 60 * 60) +	($interval->h * 60 * 60) + ($interval->i * 60) + $interval->s;
+    return ($interval->d * 24 * 60 * 60) +    ($interval->h * 60 * 60) + ($interval->i * 60) + $interval->s;
 }
 
 #50000000 para 5T
@@ -143,7 +159,7 @@ function kmbt($number)
         if (abs($number) >= pow(10, $exponent)) {
             $display = $number / pow(10, $exponent);
             $decimals = ($exponent >= 3 && round($display) < 100) ? 1 : 0;
-            $number = number_format($display, $decimals).$abbrev;
+            $number = number_format($display, $decimals) . $abbrev;
             break;
         }
     }
@@ -151,8 +167,9 @@ function kmbt($number)
     return $number;
 }
 
-function retorna_float($input){
-    if(preg_match('/\d+\.\d+/', $input, $tokens)){
+function retorna_float($input)
+{
+    if (preg_match('/\d+\.\d+/', $input, $tokens)) {
         return $tokens[0];
     }
     return null;
@@ -161,17 +178,18 @@ function retorna_float($input){
 
 
 #5b para 5000000
-function return_kmb_to_integer($val) {
+function return_kmb_to_integer($val)
+{
     #dump($val);
-    if($val){
-        $val = trim($val,'$');
+    if ($val) {
+        $val = trim($val, '$');
 
 
         #var_dump($val);
-        if(strlen($val)>1){
-            $last = strtolower($val[strlen($val)-1]);
+        if (strlen($val) > 1) {
+            $last = strtolower($val[strlen($val) - 1]);
             $val = (float) $val;
-            switch($last) {
+            switch ($last) {
                 case 'b':
                     $val *= 1000;
                 case 'm':
@@ -182,9 +200,7 @@ function return_kmb_to_integer($val) {
                 default:
                     $val *= 1;
             }
-        
         }
-    
     }
 
     return (int) $val;

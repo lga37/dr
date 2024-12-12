@@ -1,16 +1,17 @@
 <?php
 
+#use App\Livewire\Monet;
+use App\Livewire\Graf;
+
+use App\Livewire\Arxiv;
 use App\Livewire\Busca;
 use App\Livewire\Canal;
-
+use App\Livewire\Monet;
 use App\Livewire\Video;
 use App\Livewire\Vidiq;
-use App\Livewire\Archive;
 use App\Livewire\Comentario;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
-
-
 
 Route::get('/', function () {
     return view('welcome');
@@ -32,8 +33,11 @@ Route::get('ai', function(){
 Route::get('busca', Busca::class)->name('busca');
 Route::get('video', Video::class)->name('video');
 Route::get('canal', Canal::class)->name('canal');
-Route::get('vidiq', Vidiq::class)->name('vidiq');
-Route::get('archive', Archive::class)->name('archive');
+Route::get('monet', Monet::class)->name('monet');
+Route::get('arxiv/{canal_id?}', Arxiv::class)->name('arxiv');
+
+Route::get('graf/{canal?}', Graf::class)->name('graf');
+
 Route::get('comentario/{video_id?}', Comentario::class)->name('comentario');
 
 

@@ -39,13 +39,13 @@
                 </div>
               
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('vidiq')" :active="request()->routeIs('vidiq')">
-                        {{ __('Vidiq') }}
+                    <x-nav-link :href="route('monet')" :active="request()->routeIs('monet')">
+                        {{ __('Monet') }}
                     </x-nav-link>
                 </div>
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('archive')" :active="request()->routeIs('archive')">
-                        {{ __('Archive') }}
+                    <x-nav-link :href="route('arxiv')" :active="request()->routeIs('arxiv')">
+                        {{ __('Arxiv') }}
                     </x-nav-link>
                 </div>
 

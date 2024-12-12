@@ -15,38 +15,7 @@ class Video extends Bot
     protected $signature = 'video {video_ids?*} {--acao=craw}';
 
 
-    public function craw2(array $video_ids)
-    {
-
-        $queries = VideoModel::whereIn('id', $video_ids)->select('cod', 'id')->get()->toArray();
-
-        #dd($queries);
-        foreach ($queries as $query) {
-            $cod = $query['cod'];
-            $video_id = $query['id'];
-
-            $url = $cod;
-
-            echo "\n" . $url;
-
-            try {
-
-                $this->initBrowser(true);
-                $page = $this->browser->createPage();
-                $page->navigate($url);
-
-                sleep(1);
-            } catch (OperationTimedOut $e) {
-                echo 'OperationTimedOut : ' . $e->getMessage();
-            } catch (\Exception $e) {
-                echo 'Exception : ' . $e->getMessage();
-            } finally {
-                $this->closeBrowser();
-            }
-        }
-    }
-
-
+ 
 
     public function craw(array $video_ids)
     {
@@ -111,7 +80,7 @@ class Video extends Bot
                 }
                 #dump($likes);
 
-                sleep(8); #sem essa porra nao vai **************** nao ta pegando commentarios ....
+                sleep(9); #sem essa porra nao vai **************** nao ta pegando commentarios ....
                 $seletor = '#count > yt-formatted-string > span:nth-child(1)';
                 $comments = $page->dom()->querySelector($seletor);
                 if ($comments) {
@@ -120,7 +89,7 @@ class Video extends Bot
                     $comments = limpaEspacosAcentuacao($comments);
                     $comments = filtraDigitos($comments);
                 }
-                dump('comments',$comments);
+                dump('comments=',$comments);
 
 
                 $seletor = '#count > ytd-video-view-count-renderer > span.view-count.style-scope.ytd-video-view-count-renderer';
@@ -130,7 +99,7 @@ class Video extends Bot
                     $views = limpaEspacosAcentuacao($views);
                     $views = filtraDigitos($views);
                 }
-              
+
 
 
                 $page->evaluate("document.querySelector('#expand').click();");
@@ -170,12 +139,13 @@ class Video extends Bot
 
                 $campos = compact('dt', 'keywords', 'canal_id', 'views', 'likes', 'dislikes', 'desc', 'nome', 'slug', 'caption', 'comments');
 
+                #dump($campos);
 
                 $video = VideoModel::findOrFail($video_id);
                 $res = $video->update($campos);
                 echo "\n---------- Video numero $video_id atualizado com " . $res ? 'sucesso' : 'erro';
 
-                
+
             } catch (OperationTimedOut $e) {
                 echo '::::1111' . $e->getMessage();
             } catch (ElementNotFoundException $e) {
@@ -206,6 +176,6 @@ class Video extends Bot
 
         $this->info('Processado com sucesso!');
 
-        return self::SUCCESS;
+        #return self::SUCCESS;
     }
 }

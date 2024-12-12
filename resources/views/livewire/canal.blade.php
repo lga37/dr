@@ -49,7 +49,20 @@
                                         <x-datatable-item columnName="youtube_id" :sortColumn="$sortColumn" :sortDirection="$sortDirection" /> 
                                     </th>
                                     
-                                   
+                                     <th class="px-2 py-1 text-left bg-gray-50">desc</th>
+                                     <th class="px-2 py-1 text-left bg-gray-50">local</th>
+                                     <th class="px-2 py-1 text-left bg-gray-50">dt</th>
+                                     <th class="px-2 py-1 text-left bg-gray-50">views</th>
+                                     <th class="px-2 py-1 text-left bg-gray-50">videos</th>
+                                     <th class="px-2 py-1 text-left bg-gray-50">categ</th>
+                                     <th class="px-2 py-1 text-left bg-gray-50">inscr</th>
+                                     <th class="px-2 py-1 text-left bg-gray-50">busca</th>
+                                     <th class="px-2 py-1 text-left bg-gray-50">min</th>
+                                     <th class="px-2 py-1 text-left bg-gray-50">max</th>
+                                     <th class="px-2 py-1 text-left bg-gray-50">score</th>
+                                     <th class="px-2 py-1 text-left bg-gray-50">videos</th>
+                                     <th class="px-2 py-1 text-left bg-gray-50">arxivs</th>
+                                    
                                     
     
                                 </tr>
@@ -108,7 +121,7 @@
                                             {{ Number::currency($canal->min ?? 0) }}
                                         </td>
                                         <td class="px-2 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                                            {{ $canal->max }}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+                                            {{ Number::currency($canal->max ?? 0) }}
                                         </td>
                                         <td class="px-2 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
                                             {{ $canal->score }}
@@ -117,7 +130,12 @@
                                         <td class="px-2 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
                                             {{ $canal->videos()->count() }}
                                         </td>
+                                        <td class="px-2 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
+                                            A:<a href="{{ route('arxiv',$canal->id) }}">{{ $canal->arxivs()->count() }}</a>
+                                            
+                                        </td>
                                        
+                                                                           
 
                                         <td class="px-2 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
                                             <a wire:click.prevent="Url('{{ $canal->id }}')" class="text-blue-700 font-semibold" 
@@ -130,12 +148,27 @@
                                             <a wire:click.prevent="API('{{ $canal->id }}')" class="text-blue-700 font-semibold" 
                                                 href="#">Api</a>
                                         </td>
+                                        <td class="px-2 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
+                                            <a wire:click.prevent="clear()" class="text-blue-700 font-semibold" 
+                                                href="#">X</a>
+                                        </td>
+
+                                        <td class="px-2 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
+                                            <a class="text-blue-700 font-semibold" 
+                                                href="{{ route('graf',$canal) }}">Graf1</a>
+                                        </td>
+
+                                      
+                                      
+
+
+
 
                                         @if ($canal->youtube_id)
                                             
                                             <td class="px-2 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
                                                 <button class="text-yellow-700 font-semibold"
-                                                wire:click.prevent="$dispatch('openModal', { component: 'anos-webarx', arguments: { canal: {{ $canal }} }})">
+                                                wire:click.prevent="$dispatch('openModal', { component: 'manual', arguments: { canal: {{ $canal }} }})">
                                                 Man</button>
                                             </td>
 
@@ -146,11 +179,20 @@
                                                     ...
                                                 </div>
                                             </td>
+
                                             <td class="px-2 py-1 text-sm leading-5 text-green-900 whitespace-no-wrap">
-                                                <a wire:click.prevent="arxiv('{{ $canal->id }}')" 
+                                                <a wire:click.prevent="arxiv1('{{ $canal->id }}')" 
                                                     class="text-green-700 font-semibold" 
-                                                    href="#">Arxiv</a>
-                                                    <div wire:loading wire:target="arxiv('{{ $canal->id }}')">
+                                                    href="#">Arx1</a>
+                                                    <div wire:loading wire:target="arxiv1('{{ $canal->id }}')">
+                                                        ...
+                                                    </div>
+                                            </td>
+                                            <td class="px-2 py-1 text-sm leading-5 text-green-900 whitespace-no-wrap">
+                                                <a wire:click.prevent="arxiv2('{{ $canal->id }}')" 
+                                                    class="text-green-700 font-semibold" 
+                                                    href="#">Arx2</a>
+                                                    <div wire:loading wire:target="arxiv2('{{ $canal->id }}')">
                                                         ...
                                                     </div>
                                             </td>
@@ -191,29 +233,3 @@
     </div>
 </div>
 
-{{-- 
-id bigint, autoincrement .................................................................................. bigint unsigned  
-  nome varchar, utf8mb4_unicode_ci ............................................................................. varchar(255)  
-  slug varchar, utf8mb4_unicode_ci ............................................................................. varchar(255)  
-  desc text, nullable, utf8mb4_unicode_ci .............................................................................. text  
-  links json, nullable ................................................................................................. json  
-  parse tinyint ................................................................................................ 0 tinyint(1)  
-  verificado tinyint ........................................................................................... 0 tinyint(1)  
-  inscritos int, nullable ...................................................................................... int unsigned  
-  views int, nullable .......................................................................................... int unsigned  
-  dt date, nullable .................................................................................................... date  
-  local varchar, nullable, utf8mb4_unicode_ci .................................................................. varchar(255)  
-  busca_id bigint ........................................................................................... bigint unsigned  
-  created_at timestamp, nullable .................................................................................. timestamp  
-  updated_at timestamp, nullable ........ --
-
-  curl -H "Content-Type: application/json" --data \
-    '{comment: {text: "what kind of idiot name is foo?"},
-       languages: ["en"],
-       requestedAttributes: {TOXICITY:{}} }' \
-https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze?key=AIzaSyCCdoQC5UM1j6Zl87N-SWsVhaYKtykm4wQ
- curl -H "Content-Type: application/json" --data \
-    '{comment: {text: "what kind of idiot name is foo?"},
-       languages: ["en"],
-       requestedAttributes: {TOXICITY:{}} }' \
-https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze?key=AIzaSyCCdoQC5UM1j6Zl87N-SWsVhaYKtykm4wQ --}}

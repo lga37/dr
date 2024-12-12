@@ -11,14 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pages', function (Blueprint $table) {
+        Schema::create('monets', function (Blueprint $table) {
             $table->id();
-
-            $table->string('url','1024');
-            $table->text('title')->nullable();
-            $table->unsignedInteger('status')->nullable();
-            $table->boolean('isCrawled');
-            
             $table->timestamps();
         });
     }
@@ -28,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pages');
+        Schema::dropIfExists('monets');
     }
 };

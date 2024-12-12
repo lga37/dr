@@ -19,8 +19,8 @@ return new class extends Migration
             $table->unsignedInteger('views')->nullable();
             $table->unsignedInteger('subscribers')->nullable();
 
-            $table->date('dt');
-            $table->timestamp('ts')->nullable();
+            #$table->date('dt');
+            $table->datetime('ts');
             $table->text('obs')->nullable();
             $table->boolean('parsed')->default(0);
             

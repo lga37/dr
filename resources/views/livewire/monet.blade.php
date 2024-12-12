@@ -1,7 +1,7 @@
 <div>
     <x-slot name="header">
         <h2 class="text-xl font-semibold leading-tight text-gray-800">
-            {{ __('vidiqs') }}
+            {{ __('Monets') }}
         </h2>
     </x-slot>
  
@@ -26,13 +26,13 @@
                             </thead>
  
                             <tbody class="bg-white divide-y divide-gray-200 divide-solid">
-                                @forelse($vidiqs as $vidiq)
+                                @forelse($monets as $monet)
                                     <tr class="bg-white">
                                         <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                                            {{ $vidiq->id }}
+                                            {{ $monet->id }}
                                         </td>
                                         <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                                            {{ $vidiq->slug }}
+                                            {{ $monet->slug }}
                                         </td>
                                         <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
                                             {{-- Edit Button --}}
@@ -41,7 +41,7 @@
                                 @empty
                                     <tr class="bg-white">
                                         <td colspan="3" class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                                            No vidiqs found.
+                                            No monets found.
                                         </td>
                                     </tr>
                                 @endforelse
