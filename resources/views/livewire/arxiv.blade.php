@@ -47,7 +47,12 @@
                                 @forelse($arxivs as $arxiv)
                                     <tr class="bg-white">
                                         <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                                            {{ $arxiv->id }}
+                                         <a href="http://web.archive.org/web/{{$arxiv->ts}}/https://www.youtube.com/channel/{{$arxiv->canal->youtube_id}}" 
+                                                class="underline hover:no-underline text-blue-600 hover:text-blue-900 visited:text-purple-600"
+                                                target="_blank">
+                                                {{ $arxiv->id }}
+                                            </a>
+                                            
                                         </td>
                                         <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
                                             {{ $arxiv->canal->nome }}

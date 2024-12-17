@@ -15,7 +15,7 @@ class Video extends Bot
     protected $signature = 'video {video_ids?*} {--acao=craw}';
 
 
- 
+
 
     public function craw(array $video_ids)
     {

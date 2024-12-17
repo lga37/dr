@@ -14,7 +14,7 @@ function datetimeTZtoDateMysql(string $datetimeTZ)
 # 123,7 mi para 123700000
 #2,999
 
-#retornaMilMilhaoBilhaoToInt('2.5 M');
+#dd(retornaMilMilhaoBilhaoToInt('512 mil assinantes'));
 
 function retornaMilMilhaoBilhaoToInt(string $txt)
 {

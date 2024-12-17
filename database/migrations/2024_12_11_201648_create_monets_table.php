@@ -13,6 +13,18 @@ return new class extends Migration
     {
         Schema::create('monets', function (Blueprint $table) {
             $table->id();
+
+                   
+            $table->unsignedInteger('vlr')->nullable();
+
+            $table->datetime('dt');
+            $table->text('obs')->nullable();
+
+            
+            $table->foreignIdFor(Canal::class);
+
+            $table->unique(['canal_id','ts']);
+
             $table->timestamps();
         });
     }

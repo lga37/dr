@@ -75,6 +75,8 @@ class Arxiv extends Bot
 
         $arxivs = ArxivModel::where('canal_id', $id)->where('parsed', 0)->select('id', 'ts')->get()->toArray();
 
+        #checar o lang do html se nao for pt en 
+
         foreach ($arxivs as $arx) {
             $arxiv_id = $arx['id'];
             $ts = filtraDigitos($arx['ts']);
@@ -93,11 +95,25 @@ class Arxiv extends Bot
                
                 //<yt-formatted-string id="subscriber-count" class="style-scope ytd-c4-tabbed-header-renderer" aria-label="195K subscribers">195K subscribers</yt-formatted-string>
                
-               
 
+                #ru-RU es
+                if($elem = $page->dom()->querySelector("html")){
+                    if($lang = $elem->getAttribute('lang')){
+                        echo "\n--------- $lang";
+                        if($lang){
+                            $lang = substr($lang,0,2);
+                            if(in_array($lang,['ru'])){
+                                echo "\n--------- idioma ----------- Site em $lang \n\n";
+                                continue;
+                            }
+                        }
+                    }
+                }
 
                 $seletor1 = 'span.yt-subscription-button-subscriber-count-branded-horizontal.yt-uix-tooltip';
-                $seletor2 = 'span.yt-subscription-button-subscriber-count-branded-horizontal.subscribed.yt-uix-tooltip';
+
+
+                $seletor2 = 'span.yt-subscription-button-subscriber-count-branded-horizontal.subscribed.yt-uix-tooltip'; #aria-label
 
                 $seletor3 = 'span.yt-core-attributed-string.yt-content-metadata-view-model-wiz__metadata-text yt-core-attributed-string--white-space-pre-wrap.yt-core-attributed-string--link-inherit-color';
 
@@ -106,10 +122,14 @@ class Arxiv extends Bot
 
                 $seletor5 = '#subscriber-count.style-scope.ytd-c4-tabbed-header-renderer'; #esse aqui e pelo aria-label
 
+                $seletor6 = 'span.yt-subscription-button-subscriber-count-branded-horizontal.subscribed'; #so com gettext
+
+
 
                 if ($elem = $page->dom()->querySelector($seletor1)) {
                     #echo $elem->getHTML();
                     $subscribers = $elem->getAttribute('title');
+                    echo "subs::".$subscribers;
                     $subscribers = retornaMilMilhaoBilhaoToInt($subscribers);
                     echo "\n if1 $subscribers \n";
                     if($subscribers > 0){
@@ -120,6 +140,7 @@ class Arxiv extends Bot
                 } elseif ($elem = $page->dom()->querySelector($seletor2)) {
                     #echo $elem->getHTML();
                     $subscribers = $elem->getAttribute('title');
+                    echo "subs::".$subscribers;
                     $subscribers = retornaMilMilhaoBilhaoToInt($subscribers);
                     echo "\n if2 $subscribers \n";
 
@@ -132,6 +153,7 @@ class Arxiv extends Bot
                 } elseif ($elem = $page->dom()->querySelector($seletor3)) {
                     #echo $elem->getHTML();
                     $subscribers = $elem->getText();
+                    echo "subs::".$subscribers;
                     $subscribers = retornaMilMilhaoBilhaoToInt($subscribers);
                     echo "\n if3 $subscribers \n";
 
@@ -144,6 +166,7 @@ class Arxiv extends Bot
                 } elseif ($elem = $page->dom()->querySelector($seletor4)) {
                     #echo $elem->getHTML();
                     $subscribers = $elem->getText();
+                    echo "subs::".$subscribers;
                     $subscribers = retornaMilMilhaoBilhaoToInt($subscribers);
                     echo "\n if4 $subscribers \n";
                     if($subscribers > 0){
@@ -155,6 +178,16 @@ class Arxiv extends Bot
                     $subscribers = $elem->getAttribute('aria-label');
                     $subscribers = retornaMilMilhaoBilhaoToInt($subscribers);
                     echo "\n if5 $subscribers \n";
+
+                    if($subscribers > 0){
+                        $parsed=1;
+                        ArxivModel::where('id', $arxiv_id)->update(compact('subscribers', 'parsed'));
+                    }
+                
+                } elseif ($elem = $page->dom()->querySelector($seletor6)) {
+                    $subscribers = $elem->getText();
+                    $subscribers = retornaMilMilhaoBilhaoToInt($subscribers);
+                    echo "\n if6 $subscribers \n";
 
                     if($subscribers > 0){
                         $parsed=1;

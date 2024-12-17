@@ -28,16 +28,16 @@
                             </div>
                         </div>
 
-                            <div class="flex items-center">
-                                <x-input-label>Busca</x-input-label>
-                                <select wire:model.live="busca_id" class="rounded">
-                                    @foreach ($buscas as $busca)
-                                        <option value="{{ $busca->id }}">{{ $busca->q }}</option>
-                                    @endforeach
-                                    
+                        <div class="flex items-center">
+                            <x-input-label>Busca</x-input-label>
+                            <select wire:model.live="busca_id" class="rounded">
+                                @foreach ($buscas as $busca)
+                                    <option value="{{ $busca->id }}">{{ $busca->q }}</option>
+                                @endforeach
 
-                                </select>
-                            </div>
+
+                            </select>
+                        </div>
 
 
                         <div class="">{{ $videos->links() }}</div>
@@ -103,7 +103,7 @@
                                         </td>
 
                                         <td class="px-3 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                                            {{ Str::limit($video->nome,45) }}
+                                            {{ Str::limit($video->nome, 45) }}
                                         </td>
                                         <td class="px-3 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
                                             {{ $video->busca->slug }}
@@ -112,7 +112,7 @@
                                         <td class="px-3 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
                                             {{ $video->likes }} | {{ $video->dislikes }}
                                         </td>
-                                       
+
                                         <td class="px-3 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
                                             {{ $video->views }}
                                         </td>
@@ -122,11 +122,12 @@
                                         </td>
 
                                         <td class="px-3 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                                            <a href="{{ route('comentario',$video->id) }}">{{ $video->comentarios()->count() }}</a>
-                                             / {{ $video->comments }} 
+                                            <a
+                                                href="{{ route('comentario', $video->id) }}">{{ $video->comentarios()->count() }}</a>
+                                            / {{ $video->comments }}
                                         </td>
-                                       
-                                        
+
+
                                         <td class="px-3 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
                                             {{ $video->duration }} s
                                         </td>
@@ -166,22 +167,29 @@
                                                 class="text-blue-700 font-semibold">Comm</a>
                                         </td>
 
-                                        @if($video->nome)
-                                        <td class="px-3 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                                            <a wire:click.prevent="nlp1('{{ $video->id }}')" href="#"
-                                                class="text-green-700 font-semibold">NLP1</a>
-                                        </td>
-                                        <td class="px-3 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                                            <a wire:click.prevent="Gpt('{{ $video->id }}')" href="#"
-                                                class="text-green-700 font-semibold">Gpt</a>
-                                        </td>
+                                        @if ($video->nome)
+                                            <td class="px-3 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
+                                                <a wire:click.prevent="nlp1('{{ $video->id }}')" href="#"
+                                                    class="text-green-700 font-semibold">NLP1</a>
+                                            </td>
+                                            <td class="px-3 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
+                                                <a wire:click.prevent="Gpt('{{ $video->id }}')" href="#"
+                                                    class="text-green-700 font-semibold">Gpt</a>
+                                            </td>
                                         @endif
 
-                                        @if($video->caption)
-                                        <td class="px-3 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                                            <a wire:click.prevent="nlp2('{{ $video->id }}')" href="#"
-                                                class="text-green-700 font-semibold">NLP2</a>
-                                        </td>
+                                        @if ($video->caption)
+                                            <td class="px-3 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
+                                                <a wire:click.prevent="nlp2('{{ $video->id }}')" href="#"
+                                                    class="text-green-700 font-semibold">NLP2</a>
+                                            </td>
+
+                                            <td class="px-3 py-1 text-sm leading-5 text-gray-900 whitespace-no-wrap">
+                                                <a wire:click.prevent="ranking('{{ $video->id }}')" href="#"
+                                                    class="text-green-700 font-semibold">RnK</a>
+                                            </td>
+
+                                          
                                         @endif
 
 

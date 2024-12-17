@@ -572,6 +572,7 @@ class Bot extends Command
             'headless' => $headless,
             'windowSize'   => [1920, 1080],
             'noSandbox' => true,
+            'customFlags' => ['--lang=pt-BR'],
 
             #'customFlags' => ['--proxy-server=http://104.207.54.209:3128'],
         ]);
